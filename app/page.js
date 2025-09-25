@@ -1,103 +1,62 @@
-import Image from "next/image";
+'use client'
+import { useState } from 'react'
+import DailyTimeTable from "./components/DailyTimeTable";
+
+const tabs = [
+  { id: 'registration', name: 'Registration', component: <div className="text-black">Registration</div> },
+  { id: 'today-lecture', name: "Today's Lectures", component: <div className="text-black">Today's Lecture</div> },
+  { id: 'attendance', name: 'Attendance', component: <div className="text-black">Attendance</div> },
+  { id: 'syllabus-coverage', name: 'Syllabus Coverage', component: <div className="text-black">Syllabus Coverage</div> },
+  { id: 'syllabus-coverage-faculty-wise', name: 'Syllabus Coverage(Faculty Wise)', component: <div className="text-black">Syllabus Coverage (Faculty Wise)</div> },
+  { id: 'leave', name: 'Leave', component: <div className="text-black">Leave</div> },
+  { id: 'daily-time-table', name: 'Master Time Table', component: <DailyTimeTable /> },
+  { id: 'attendance-sheet', name: 'Attendance Sheet', component: <div className="text-black">Attendance Sheet</div> },
+  { id: 'lectures-status-on-leave', name: 'Lectures Status On Leave', component: <div className="text-black">Lectures Status On Leave</div> },
+  { id: 'mis-report', name: 'MIS Report', component: <div className="text-black">MIS Report</div> },
+  { id: 'utillization', name: 'Utillization/Occupancy', component: <div className="text-black">Utillization</div> },
+];
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [activeTab, setActiveTab] = useState('daily-time-table');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <div className="p-4 ">
+     <div className="bg-white text-black font-light text-base mb-2 flex flex-row gap-4 justify-center overflow-x-auto">
+        {tabs.map(tab => (
+          <p
+            key={tab.id}
+            className={`cursor-pointer whitespace-nowrap px-2 py-1 ${activeTab === tab.id ? 'font-medium text-blue-600 border-b-2 border-blue-600' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            {tab.name}
+          </p>
+        ))}
+      </div>
+         
+
+       {activeTab === 'registration' && <div className="text-black">Registration</div>}  
+              {activeTab === 'today-lecture' && <div className="text-black">Today's Lecture</div>}  
+                     {activeTab === 'attendance' && <div className="text-black">Attendance</div>}  
+       {activeTab === 'syllabus-coverage' && <div className="text-black">Syllabus Coverage</div>}  
+       {activeTab === 'syllabus-coverage-faculty-wise' && <div className="text-black">Syllabus Coverage (Faculty Wise)</div>}  
+       {activeTab === 'leave' && <div className="text-black">Leave</div>}  
+
+
+      {activeTab === 'daily-time-table' && <div>
+        <DailyTimeTable />
+      </div>
+      }
+
+       {activeTab === 'attendance-sheet' && <div className="text-black">Attendance Sheet</div>}  
+       
+       {activeTab === 'lectures-status-on-leave' && <div className="text-black">Lectures Status On Leave</div>}  
+       
+       {activeTab === 'mis-report' && <div className="text-black">MIS Report</div>}  
+       
+       {activeTab === 'utillization' && <div className="text-black">Utillization</div>}  
+      
+
+
     </div>
   );
 }
