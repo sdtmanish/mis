@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
 import DailyTimeTable from "./components/DailyTimeTable";
+import TodayLectures from './components/TodayLectures';
+import Leave from './components/Leave';
 
 const tabs = [
   { id: 'registration', name: 'Registration', component: <div className="text-black">Registration</div> },
-  { id: 'today-lecture', name: "Today&apos;s Lectures", component: <div className="text-black">Today&apos;s Lectures</div> },
+  { id: 'today-lecture', name: "Today's Lectures", component: <div className="text-black">Today's Lectures</div> },
   { id: 'attendance', name: 'Attendance', component: <div className="text-black">Attendance</div> },
   { id: 'syllabus-coverage', name: 'Syllabus Coverage', component: <div className="text-black">Syllabus Coverage</div> },
   { id: 'syllabus-coverage-faculty-wise', name: 'Syllabus Coverage(Faculty Wise)', component: <div className="text-black">Syllabus Coverage (Faculty Wise)</div> },
@@ -35,11 +37,18 @@ export default function Home() {
          
 
        {activeTab === 'registration' && <div className="text-black">Registration</div>}  
-              {activeTab === 'today-lecture' && <div className="text-black">{"Today's Lecture"}</div>}  
+
+              {activeTab === 'today-lecture' && <div>
+                
+                <TodayLectures/>
+                
+                
+                </div>}  
+
                      {activeTab === 'attendance' && <div className="text-black">Attendance</div>}  
        {activeTab === 'syllabus-coverage' && <div className="text-black">Syllabus Coverage</div>}  
        {activeTab === 'syllabus-coverage-faculty-wise' && <div className="text-black">Syllabus Coverage (Faculty Wise)</div>}  
-       {activeTab === 'leave' && <div className="text-black">Leave</div>}  
+       {activeTab === 'leave' && <div className="text-black"><Leave/></div>}  
 
 
       {activeTab === 'daily-time-table' && <div>
