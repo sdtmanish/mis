@@ -3,6 +3,8 @@ import { useState } from 'react'
 import DailyTimeTable from "./components/DailyTimeTable";
 import TodayLectures from './components/TodayLectures';
 import Leave from './components/Leave';
+import Utilization from './components/Utilization';
+import EmployeeAttendanceSheet from './components/EmployeeAttendanceSheet';
 
 const tabs = [
   { id: 'registration', name: 'Registration', component: <div className="text-black">Registration</div> },
@@ -23,11 +25,11 @@ export default function Home() {
 
   return (
     <div className="p-4 ">
-     <div className="bg-white text-black font-light text-base mb-2 flex flex-row gap-4 justify-center overflow-x-auto">
+     <div className="bg-white text-black font-medium text-base m-4 pb-2 flex flex-wrap gap-4 justify-center  border-b border-gray-300">
         {tabs.map(tab => (
           <p
             key={tab.id}
-            className={`cursor-pointer whitespace-nowrap px-2 py-1 ${activeTab === tab.id ? 'font-medium text-blue-600 border-b-2 border-blue-600' : ''}`}
+            className={`cursor-pointer whitespace-nowrap px-2 py-1 ${activeTab === tab.id ? 'font-medium text-blue-600 border-b-3 border-blue-600' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.name}
@@ -45,7 +47,7 @@ export default function Home() {
                 
                 </div>}  
 
-                     {activeTab === 'attendance' && <div className="text-black">Attendance</div>}  
+                     {activeTab === 'attendance' && <div > <EmployeeAttendanceSheet/> </div>}  
        {activeTab === 'syllabus-coverage' && <div className="text-black">Syllabus Coverage</div>}  
        {activeTab === 'syllabus-coverage-faculty-wise' && <div className="text-black">Syllabus Coverage (Faculty Wise)</div>}  
        {activeTab === 'leave' && <div className="text-black"><Leave/></div>}  
@@ -62,7 +64,7 @@ export default function Home() {
        
        {activeTab === 'mis-report' && <div className="text-black">MIS Report</div>}  
        
-       {activeTab === 'utillization' && <div className="text-black">Utillization</div>}  
+       {activeTab === 'utillization' && <div> <Utilization/> </div>}  
       
 
 
