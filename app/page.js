@@ -13,7 +13,7 @@ const tabs = [
   { id: 'syllabus-coverage', name: 'Syllabus Coverage', component: <div className="text-black">Syllabus Coverage</div> },
   { id: 'syllabus-coverage-faculty-wise', name: 'Syllabus Coverage(Faculty Wise)', component: <div className="text-black">Syllabus Coverage (Faculty Wise)</div> },
   { id: 'leave', name: 'Leave', component: <div className="text-black">Leave</div> },
-  { id: 'daily-time-table', name: 'Master Time Table', component: <DailyTimeTable /> },
+  { id: 'daily-time-table', name: 'Master Time Table', component: <div class>Daily Time Table</div> },
   { id: 'attendance-sheet', name: 'Attendance Sheet', component: <div className="text-black">Attendance Sheet</div> },
   { id: 'lectures-status-on-leave', name: 'Lectures Status On Leave', component: <div className="text-black">Lectures Status On Leave</div> },
   { id: 'mis-report', name: 'MIS Report', component: <div className="text-black">MIS Report</div> },
@@ -25,18 +25,40 @@ export default function Home() {
 
   return (
     <div className="p-4 ">
-     <div className="bg-white text-black font-medium text-base m-4 pb-2 flex flex-wrap gap-4 justify-center  border-b border-gray-300">
-        {tabs.map(tab => (
-          <p
-            key={tab.id}
-            className={`cursor-pointer whitespace-nowrap px-2 py-1 ${activeTab === tab.id ? 'font-medium text-blue-600 border-b-3 border-blue-600' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.name}
-          </p>
-        ))}
-      </div>
-         
+<div className="sticky top-0 z-50 bg-white shadow-md">
+  {/* Top bar */}
+  <div className="flex items-center justify-between px-6 py-3 border-b border-gray-200">
+    <div className="flex items-center gap-3">
+      {/* Logo placeholder */}
+      <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-lg"></div>
+      <h1 className="text-lg font-semibold text-gray-700">MIS Dashboard</h1>
+    </div>
+    <div className="text-sm text-gray-500">Welcome, User 👋</div>
+  </div>
+
+  {/* Tabs */}
+  <div className="flex justify-center gap-6 px-6 bg-gray-50">
+    {tabs.map(tab => (
+      <button
+        key={tab.id}
+        className={`
+          relative px-3 py-3 text-sm font-medium transition-colors cursor-pointer
+          ${activeTab === tab.id 
+            ? 'text-blue-600' 
+            : 'text-gray-600 hover:text-gray-800'}
+        `}
+        onClick={() => setActiveTab(tab.id)}
+      >
+        {tab.name}
+        {activeTab === tab.id && (
+          <span className="absolute left-0 bottom-0 w-full h-[3px] bg-blue-600 rounded-full transition-all duration-300"></span>
+        )}
+      </button>
+    ))}
+  </div>
+</div>
+
+
 
        {activeTab === 'registration' && <div className="text-black">Registration</div>}  
 
@@ -47,7 +69,7 @@ export default function Home() {
                 
                 </div>}  
 
-                     {activeTab === 'attendance' && <div > <EmployeeAttendanceSheet/> </div>}  
+                     {activeTab === 'attendance' && <div > Attendance </div>}  
        {activeTab === 'syllabus-coverage' && <div className="text-black">Syllabus Coverage</div>}  
        {activeTab === 'syllabus-coverage-faculty-wise' && <div className="text-black">Syllabus Coverage (Faculty Wise)</div>}  
        {activeTab === 'leave' && <div className="text-black"><Leave/></div>}  
@@ -58,7 +80,7 @@ export default function Home() {
       </div>
       }
 
-       {activeTab === 'attendance-sheet' && <div className="text-black">Attendance Sheet</div>}  
+       {activeTab === 'attendance-sheet' && <div ><EmployeeAttendanceSheet/></div>}  
        
        {activeTab === 'lectures-status-on-leave' && <div className="text-black">Lectures Status On Leave</div>}  
        

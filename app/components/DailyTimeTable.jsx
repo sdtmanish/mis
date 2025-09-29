@@ -87,103 +87,58 @@ export default function DailyTimeTable() {
   }
 
   return (
-    <div className="p-4 bg-gray-100">
-      <h1 className="text-xl font-bold text-center text-gray-800 mb-4">
-        Daily Time Table
-      </h1>
+  <div className="p-4  flex justify-center mt-8">
+    <div className="w-full max-w-[80vw] border-b border-t border-gray-300 ">
 
       {/* Desktop / tablet view */}
-      <div className="hidden md:block shadow-xl rounded-xl">
-        <div className="overflow-x-auto">
-          <div className="max-h-[80vh] overflow-y-auto">
-            <table className="min-w-full bg-white border-collapse rounded-xl overflow-hidden">
-              <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white sticky top-0 z-10">
-                <tr className="border-b-2 border-indigo-200">
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    S.No.
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    Course
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    I
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    II
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    III
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    IV
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    V
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    VI
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    VII
-                  </th>
-                  <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider">
-                    VIII
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {timeTableData.map((item, index) => (
-                  <tr
-                    key={index}
-                    className={`border-b border-gray-200 transition-transform duration-200 ease-in-out ${
-                      index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                    } hover:bg-blue-50 hover:shadow-lg`}
-                  >
-                    <td className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200">
-                      {item.sno}
-                    </td>
+      <div className="hidden md:block overflow-x-auto overflow-y-auto max-h-[80vh] ">
+        <table className="w-full bg-white border-collapse rounded-xl">
+          <thead className="bg-gray-100  text-gray-700 sticky top-0 z-10 ">
+            <tr className="border-b-2 border-indigo-200">
+              <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider border border-gray-300 text-gray-600">
+                S.No.
+              </th>
+              <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider border border-gray-300 text-gray-600">
+                Course
+              </th>
+              {["I","II","III","IV","V","VI","VII","VIII"].map((sem) => (
+                <th
+                  key={sem}
+                  className="py-4 px-6 text-center text-sm text-gray-600 font-bold uppercase tracking-wider border border-gray-300"
+                >
+                  {sem}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {timeTableData.map((item, index) => (
+              <tr
+                key={index}
+                className={`border-b border-gray-200 transition-transform duration-200 ease-in-out ${
+                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                } hover:bg-green-200 cursor-pointer hover:shadow-lg`}
+              >
+                <td className="py-4 px-6 text-sm text-gray-800 border border-gray-300 text-center">
+                  {item.sno}
+                </td>
+                <td
+                  className="py-4 px-6 text-sm text-gray-800 border border-gray-300"
+                  dangerouslySetInnerHTML={processCellData(item.course)}
+                ></td>
+                {[item.I, item.II, item.III, item.IV, item.V, item.VI, item.VII, item.VIII].map(
+                  (val, i) => (
                     <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.course)}
+                      key={i}
+                      className="py-4 px-6 text-sm text-gray-800 border border-gray-300 text-center"
+                      dangerouslySetInnerHTML={processCellData(val)}
                     ></td>
-                    <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.I)}
-                    ></td>
-                    <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.II)}
-                    ></td>
-                    <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.III)}
-                    ></td>
-                    <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.IV)}
-                    ></td>
-                    <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.V)}
-                    ></td>
-                    <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.VI)}
-                    ></td>
-                    <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.VII)}
-                    ></td>
-                    <td
-                      className="py-4 px-6 text-sm text-gray-800 border-r border-gray-200"
-                      dangerouslySetInnerHTML={processCellData(item.VIII)}
-                    ></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  )
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Mobile view */}
@@ -198,63 +153,48 @@ export default function DailyTimeTable() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="font-medium text-gray-500">Course:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.course)}
-                ></span>
+                <span className="font-medium text-gray-500">Course:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.course)}></span>
               </div>
               <div>
-                <span className="font-medium text-gray-500">I:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.I)}
-                ></span>
+                <span className="font-medium text-gray-500">I:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.I)}></span>
               </div>
               <div>
-                <span className="font-medium text-gray-500">II:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.II)}
-                ></span>
+                <span className="font-medium text-gray-500">II:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.II)}></span>
               </div>
               <div>
-                <span className="font-medium text-gray-500">III:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.III)}
-                ></span>
+                <span className="font-medium text-gray-500">III:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.III)}></span>
               </div>
               <div>
-                <span className="font-medium text-gray-500">IV:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.IV)}
-                ></span>
+                <span className="font-medium text-gray-500">IV:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.IV)}></span>
               </div>
               <div>
-                <span className="font-medium text-gray-500">V:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.V)}
-                ></span>
+                <span className="font-medium text-gray-500">V:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.V)}></span>
               </div>
               <div>
-                <span className="font-medium text-gray-500">VI:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.VI)}
-                ></span>
+                <span className="font-medium text-gray-500">VI:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.VI)}></span>
               </div>
               <div>
-                <span className="font-medium text-gray-500">VII:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.VII)}
-                ></span>
+                <span className="font-medium text-gray-500">VII:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.VII)}></span>
               </div>
               <div>
-                <span className="font-medium text-gray-500">VIII:</span>{' '}
-                <span
-                  dangerouslySetInnerHTML={processCellData(item.VIII)}
-                ></span>
+                <span className="font-medium text-gray-500">VIII:</span>{" "}
+                <span dangerouslySetInnerHTML={processCellData(item.VIII)}></span>
               </div>
             </div>
           </div>
         ))}
       </div>
+
     </div>
-  );
+  </div>
+);
+
 }

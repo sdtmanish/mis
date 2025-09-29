@@ -54,17 +54,17 @@ export default function Leave() {
   }, []);
 
   return (
-    <div className="p-4 overflow-x-auto text-gray-700">
+    <div className="p-4 overflow-x-auto text-gray-700 mt-8 flex justify-center">
       {/* scroll container */}
-      <div className="max-h-[80vh] overflow-y-auto border border-gray-200 rounded-3xl">
+      <div className="max-h-[80vh] w-[80vw] overflow-y-auto ">
         <table className="table-auto border-collapse w-full text-sm">
-          <thead className="bg-blue-300 font-semibold sticky top-0 z-10">
+          <thead className="bg-gray-100 font-semibold sticky top-0 z-10">
             <tr>
-              <th className="border border-gray-200 px-4 py-2">Name</th>
-              <th className="border border-gray-200 px-4 py-2">Employee Code</th>
-              <th className="border border-gray-200 px-4 py-2">Worked Days</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
+              <th className="border border-gray-300 px-4 py-2">Employee Code</th>
+              <th className="border border-gray-300 px-4 py-2">Worked Days</th>
               {leaveTypes.map(type => (
-                <th key={type} className="border border-gray-200 px-4 py-2">
+                <th key={type} className="border border-gray-300 px-4 py-2">
                   {type}
                 </th>
               ))}
@@ -74,11 +74,11 @@ export default function Leave() {
           <tbody>
             {data.map((emp, index) => (
               <tr key={index} className="hover:bg-gray-100">
-                <td className="border border-gray-200 px-4 py-2">{emp.Name}</td>
-                <td className="border border-gray-200 px-4 py-2 text-center">{emp.EmployeeCode}</td>
-                <td className="border border-gray-200 px-4 py-2 text-center">{emp.WorkedDays}</td>
+                <td className="border border-gray-300 px-4 py-2">{emp.Name}</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">{emp.EmployeeCode}</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">{emp.WorkedDays}</td>
                 {leaveTypes.map(type => (
-                  <td key={type} className="border border-gray-200 px-4 py-2 text-center">
+                  <td key={type} className="border border-gray-300 px-4 py-2 text-center">
                     {emp[type] ?? "-"}
                   </td>
                 ))}
