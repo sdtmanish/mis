@@ -8,12 +8,12 @@ import EmployeeAttendanceSheet from './components/EmployeeAttendanceSheet';
 
 const tabs = [
   { id: 'registration', name: 'Registration', component: <div className="text-black">Registration</div> },
-  { id: 'today-lecture', name: "Today's Lectures", component: <div className="text-black">Today's Lectures</div> },
+  { id: 'today-lecture', name: "Today's Lectures", component: <div className="text-black">{"Today's Lectures"}</div> },
   { id: 'attendance', name: 'Attendance', component: <div className="text-black">Attendance</div> },
   { id: 'syllabus-coverage', name: 'Syllabus Coverage', component: <div className="text-black">Syllabus Coverage</div> },
   { id: 'syllabus-coverage-faculty-wise', name: 'Syllabus Coverage(Faculty Wise)', component: <div className="text-black">Syllabus Coverage (Faculty Wise)</div> },
   { id: 'leave', name: 'Leave', component: <div className="text-black">Leave</div> },
-  { id: 'daily-time-table', name: 'Master Time Table', component: <div class>Daily Time Table</div> },
+  { id: 'daily-time-table', name: 'Master Time Table', component: <div className="text-black">Daily Time Table</div> },
   { id: 'attendance-sheet', name: 'Attendance Sheet', component: <div className="text-black">Attendance Sheet</div> },
   { id: 'lectures-status-on-leave', name: 'Lectures Status On Leave', component: <div className="text-black">Lectures Status On Leave</div> },
   { id: 'mis-report', name: 'MIS Report', component: <div className="text-black">MIS Report</div> },
