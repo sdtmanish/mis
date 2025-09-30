@@ -129,14 +129,14 @@ export default function Utilization() {
 
 
     return (
-        <div className="text-black flex justify-center mt-12">
+        <div className="text-gray-800 flex justify-center mt-12">
             <table className="border border-gray-300 w-[90vw] lg:w-[90vw] h-[80vh] ">
-                <thead className="bg-gray-100">
+                <thead className="bg-gray-100 ">
                     <tr >
-                        <th className="border border-gray-300 px-2 py-3 font-light">S.No</th>
-                        <th className="border border-gray-300 px-2 py-3 font-light">Timings</th>
+                        <th className="border border-gray-300 px-2 py-3 font-bold ">S.No</th>
+                        <th className="border border-gray-300 px-2 py-3 font-bold">Timings</th>
                         {days.map((day, i) => (
-                            <th key={i} className="border border-gray-300 px-2 py-3 font-medium">{day}</th>
+                            <th key={i} className="border border-gray-300 px-2 py-3 font-bold">{day}</th>
                         ))}
                     </tr>
                 </thead>

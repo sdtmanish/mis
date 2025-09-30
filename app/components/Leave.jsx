@@ -54,11 +54,11 @@ export default function Leave() {
   }, []);
 
   return (
-    <div className="p-4 overflow-x-auto text-gray-700 mt-8 flex justify-center">
+    <div className="p-4  text-gray-800 mt-8 flex justify-center">
       {/* scroll container */}
-      <div className="max-h-[80vh] max-w-[96vw] lg:w-[90vw] overflow-y-auto ">
+      <div className="max-h-[80vh] w-full overflow-y-auto overflow-x-auto">
         <table className="table-auto border-collapse w-full text-sm">
-          <thead className="bg-gray-100 font-semibold sticky top-0 z-10">
+          <thead className="bg-gray-100 text-base sticky top-0 z-10">
             <tr>
               <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
               <th className="border border-gray-300 px-4 py-2">Employee Code</th>

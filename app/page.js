@@ -42,7 +42,7 @@ export default function Home() {
       <button
         key={tab.id}
         className={`
-          relative px-3 py-3 text-base font-medium transition-colors cursor-pointer
+          relative px-3 py-3 text-base font-bold transition-colors cursor-pointer
           ${activeTab === tab.id 
             ? 'text-blue-600' 
             : 'text-gray-600 hover:text-gray-800'}

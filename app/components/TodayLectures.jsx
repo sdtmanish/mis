@@ -34,11 +34,11 @@ export default function TodayLectures() {
   }, []);
 
   return (
-    <div className="text-gray-700 p-1 mt-8 flex justify-center">
-      <div className="max-h-[80vh] max-w-[98vw] lg:w-[90vw] overflow-y-auto">
-        <table className="border-collapse border border-gray-300 w-full text-sm text-left table-fixed">
+    <div className=" text-gray-800 p-1 mt-8 flex justify-center">
+      <div className="max-h-[80vh] w-full overflow-y-auto overflow-x-auto ">
+        <table className="border-collapse border border-gray-300  text-sm text-left ">
           {/* Table Head */}
-          <thead className="bg-gray-100 font-semibold sticky top-0 z-10">
+          <thead className="bg-gray-100 text-base sticky top-0 z-10">
             <tr>
               <th className="w-[13%]  border border-gray-300 px-2 lg:px-4 py-2">Program Semester</th>
               <th className="w-[9%] border border-gray-300 px-2 lg:px-4 py-2">Faculty</th>
@@ -58,7 +58,7 @@ export default function TodayLectures() {
           {/* Table Body */}
           <tbody>
             {data.map((i, index) => (
-              <tr key={i.ttcode ?? index} className="hover:bg-green-200 cursor-pointer">
+              <tr key={i.ttcode ?? index} className="hover:bg-green-200 cursor-pointer ">
                 <td className="  border border-gray-300 px-2 lg:px-4 py-2">{i.course}</td>
                 <td className=" border border-gray-300 px-2 lg:px-4 py-2">{i.Faculty}</td>
                 <td className=" border border-gray-300 px-2 lg:px-4 py-2">{i.subject}</td>
