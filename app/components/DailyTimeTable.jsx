@@ -88,23 +88,23 @@ export default function DailyTimeTable() {
 
   return (
   <div className="p-4  flex justify-center mt-8">
-    <div className="w-full max-w-[80vw] border-b border-t border-gray-300 ">
+    <div className="max-w-[96vw]   lg:max-w-[90vw] border-b border-t border-gray-300 ">
 
       {/* Desktop / tablet view */}
-      <div className="hidden md:block overflow-x-auto overflow-y-auto max-h-[80vh] ">
+      <div className="hidden md:block  overflow-y-auto max-h-[80vh] ">
         <table className="w-full bg-white border-collapse rounded-xl">
           <thead className="bg-gray-100  text-gray-700 sticky top-0 z-10 ">
             <tr className="border-b-2 border-indigo-200">
-              <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider border border-gray-300 text-gray-600">
+              <th className="px-2 py-2 lg:py-4 lg:px-6 text-center text-sm font-bold uppercase tracking-wider border border-gray-300 text-gray-600">
                 S.No.
               </th>
-              <th className="py-4 px-6 text-center text-sm font-bold uppercase tracking-wider border border-gray-300 text-gray-600">
+              <th className="px-2 py-2 lg:py-4 lg:px-6 text-center text-sm font-bold uppercase tracking-wider border border-gray-300 text-gray-600">
                 Course
               </th>
               {["I","II","III","IV","V","VI","VII","VIII"].map((sem) => (
                 <th
                   key={sem}
-                  className="py-4 px-6 text-center text-sm text-gray-600 font-bold uppercase tracking-wider border border-gray-300"
+                  className="px-2 py-2 lg:py-4 lg:px-6 text-center text-sm text-gray-600 font-bold uppercase tracking-wider border border-gray-300"
                 >
                   {sem}
                 </th>
@@ -119,18 +119,18 @@ export default function DailyTimeTable() {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 } hover:bg-green-200 cursor-pointer hover:shadow-lg`}
               >
-                <td className="py-4 px-6 text-sm text-gray-800 border border-gray-300 text-center">
+                <td className=" lg:py-4 lg:px-6 text-sm text-gray-800 border border-gray-300 text-center">
                   {item.sno}
                 </td>
                 <td
-                  className="py-4 px-6 text-sm text-gray-800 border border-gray-300"
+                  className="lg:py-4 lg:px-6 text-sm text-gray-800 border border-gray-300"
                   dangerouslySetInnerHTML={processCellData(item.course)}
                 ></td>
                 {[item.I, item.II, item.III, item.IV, item.V, item.VI, item.VII, item.VIII].map(
                   (val, i) => (
                     <td
                       key={i}
-                      className="py-4 px-6 text-sm text-gray-800 border border-gray-300 text-center"
+                      className="lg:py-4 lg:px-6 text-sm text-gray-800 border border-gray-300 text-center"
                       dangerouslySetInnerHTML={processCellData(val)}
                     ></td>
                   )

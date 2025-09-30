@@ -130,7 +130,7 @@ export default function Utilization() {
 
     return (
         <div className="text-black flex justify-center mt-12">
-            <table className="border border-gray-300 w-[80vw] h-[80vh] ">
+            <table className="border border-gray-300 w-[90vw] lg:w-[90vw] h-[80vh] ">
                 <thead className="bg-gray-100">
                     <tr >
                         <th className="border border-gray-300 px-2 py-3 font-light">S.No</th>

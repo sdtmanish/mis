@@ -56,7 +56,7 @@ export default function Leave() {
   return (
     <div className="p-4 overflow-x-auto text-gray-700 mt-8 flex justify-center">
       {/* scroll container */}
-      <div className="max-h-[80vh] w-[80vw] overflow-y-auto ">
+      <div className="max-h-[80vh] max-w-[96vw] lg:w-[90vw] overflow-y-auto ">
         <table className="table-auto border-collapse w-full text-sm">
           <thead className="bg-gray-100 font-semibold sticky top-0 z-10">
             <tr>
@@ -73,7 +73,7 @@ export default function Leave() {
 
           <tbody>
             {data.map((emp, index) => (
-              <tr key={index} className="hover:bg-gray-100">
+              <tr key={index} className="hover:bg-green-200">
                 <td className="border border-gray-300 px-4 py-2">{emp.Name}</td>
                 <td className="border border-gray-300 px-4 py-2 text-center">{emp.EmployeeCode}</td>
                 <td className="border border-gray-300 px-4 py-2 text-center">{emp.WorkedDays}</td>

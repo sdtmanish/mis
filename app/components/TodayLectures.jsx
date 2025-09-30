@@ -34,25 +34,24 @@ export default function TodayLectures() {
   }, []);
 
   return (
-    <div className="text-gray-700  p-4 mt-8 flex justify-center">
-      {/* Scroll wrapper */}
-      <div className="max-h-[80vh] w-[90vw] overflow-y-auto">
-        <table className="border-collapse border border-gray-300 w-full text-sm text-left">
+    <div className="text-gray-700 p-1 mt-8 flex justify-center">
+      <div className="max-h-[80vh] max-w-[98vw] lg:w-[90vw] overflow-y-auto">
+        <table className="border-collapse border border-gray-300 w-full text-sm text-left table-fixed">
           {/* Table Head */}
           <thead className="bg-gray-100 font-semibold sticky top-0 z-10">
             <tr>
-              <th className="border border-gray-300 px-4 py-2">Program Semester</th>
-              <th className="border border-gray-300 px-4 py-2">Faculty</th>
-              <th className="border border-gray-300 px-4 py-2">Course</th>
-              <th className="border border-gray-300 px-4 py-2">Course Type</th>
-              <th className="border border-gray-300 px-4 py-2 text-center">Group</th>
-              <th className="border border-gray-300 px-4 py-2">Period</th>
-              <th className="border border-gray-300 px-4 py-2">Attendance Status</th>
-              <th className="border border-gray-300 px-4 py-2">Period Start</th>
-              <th className="border border-gray-300 px-4 py-2">Period End</th>
-              <th className="border border-gray-300 px-4 py-2">Period Status</th>
-              <th className="border border-gray-300 px-4 py-2">Engaged To</th>
-              <th className="border border-gray-300 px-4 py-2">DPR Status</th>
+              <th className="w-[13%]  border border-gray-300 px-2 lg:px-4 py-2">Program Semester</th>
+              <th className="w-[9%] border border-gray-300 px-2 lg:px-4 py-2">Faculty</th>
+              <th className="w-[13%] border border-gray-300 px-2 lg:px-4 py-2">Course</th>
+              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2">Course Type</th>
+              <th className="w-[6%]  border border-gray-300 px-2 lg:px-4 py-2 text-center">Group</th>
+              <th className="w-[6%]  border border-gray-300 px-2 lg:px-4 py-2 text-center">Period</th>
+              <th className="w-[9%] border border-gray-300 px-2 lg:px-4 py-2">Attendance Status</th>
+              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2">Period Start</th>
+              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2">Period End</th>
+              <th className="w-[6%]  border border-gray-300 px-2 lg:px-4 py-2">Period Status</th>
+              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2 ">Engaged To</th>
+              <th className="w-[7%]  border border-gray-300 px-2 lg:px-4 py-2">DPR Status</th>
             </tr>
           </thead>
 
@@ -60,18 +59,18 @@ export default function TodayLectures() {
           <tbody>
             {data.map((i, index) => (
               <tr key={i.ttcode ?? index} className="hover:bg-green-200 cursor-pointer">
-                <td className="border border-gray-300 px-4 py-2">{i.course}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.Faculty}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.subject}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.SubjectType}</td>
-                <td className="border border-gray-300 px-2 py-2 text-center">{i.GroupName}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.Period}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.AttendanceMarkedNotMarked}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.TS}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.TE}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.Status}</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">{i.Engagedto ?? '-'}</td>
-                <td className="border border-gray-300 px-4 py-2">{i.TopicStatus}</td>
+                <td className="  border border-gray-300 px-2 lg:px-4 py-2">{i.course}</td>
+                <td className=" border border-gray-300 px-2 lg:px-4 py-2">{i.Faculty}</td>
+                <td className=" border border-gray-300 px-2 lg:px-4 py-2">{i.subject}</td>
+                <td className="  border border-gray-300 px-2 lg:px-4 py-2">{i.SubjectType}</td>
+                <td className="border border-gray-300 px-2 lg:px-4 py-2 text-center">{i.GroupName}</td>
+                <td className="border border-gray-300 px-2 lg:px-4 py-2 text-center">{i.Period}</td>
+                <td className=" border border-gray-300 px-2 lg:px-4 py-2">{i.AttendanceMarkedNotMarked}</td>
+                <td className=" border border-gray-300 px-2 lg:px-4 py-2">{i.TS}</td>
+                <td className="  border border-gray-300 px-2 lg:px-4 py-2">{i.TE}</td>
+                <td className=" border border-gray-300 px-2 lg:px-4 py-2">{i.Status}</td>
+                <td className=" border border-gray-300 px-2 lg:px-4 py-2 text-center">{i.Engagedto ?? '-'}</td>
+                <td className="  border border-gray-300 px-2 lg:px-4 py-2">{i.TopicStatus}</td>
               </tr>
             ))}
           </tbody>

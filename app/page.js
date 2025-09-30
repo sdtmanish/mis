@@ -37,12 +37,12 @@ export default function Home() {
   </div>
 
   {/* Tabs */}
-  <div className="flex justify-center gap-6 px-6 bg-gray-50">
+  <div className="flex flex-wrap justify-center gap-6 px-6 bg-gray-50">
     {tabs.map(tab => (
       <button
         key={tab.id}
         className={`
-          relative px-3 py-3 text-sm font-medium transition-colors cursor-pointer
+          relative px-3 py-3 text-base font-medium transition-colors cursor-pointer
           ${activeTab === tab.id 
             ? 'text-blue-600' 
             : 'text-gray-600 hover:text-gray-800'}
