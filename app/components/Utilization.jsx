@@ -2,7 +2,9 @@
 import { useState, useEffect, useRef } from 'react'
 import Draggable from 'react-draggable'
 import { HiMiniChevronUpDown } from 'react-icons/hi2'
-import { useSortData } from '../Hooks/useSortData' // ✅ import your hook
+import { useSortData } from '../Hooks/useSortData' 
+import * as XLSX from 'xlsx';
+import {saveAs} from 'file-saver'
 
 export default function Utilization() {
   const nodeRef = useRef(null)
@@ -45,6 +47,12 @@ export default function Utilization() {
 
     fetchUtilizationDetails()
   }, [])
+
+
+  
+
+
+
 
   if (!data || data.length === 0) {
     return (
@@ -116,7 +124,18 @@ export default function Utilization() {
     }
   }
 
-  // 🔹 Sorting hook for popupData
+  //function for exporting in excelsheet
+  const exportToExcel = (data, fileName = "table-data.xlsx") =>{
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    const excelBuffer = XLSX.write(workbook, {bookType: "xlsx", type:"array"});
+    const blob = new Blob([excelBuffer], {type: "application/octet-stream"});
+    saveAs(blob, fileName);
+  }
 
 
 
@@ -193,12 +212,21 @@ export default function Utilization() {
                 <h2 className="text-lg font-medium text-gray-700">
                   Class Strength Details
                 </h2>
+
+                <div className=" flex flex-row justify-center items-center gap-2">
+                  <button 
+                  onClick={()=> exportToExcel(sortedData, 'UtilizationData.xlsx')}
+                  className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-1 rounded-sm cursor-pointer"
+                  >
+                    To Excel
+                  </button>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="text-gray-800 hover:text-gray-700 px-2 py-1 rounded-full hover:bg-gray-200 active:bg-gray-100 cursor-pointer"
                 >
                   ✕
                 </button>
+                </div>
               </div>
 
               {/* Popup Content */}
