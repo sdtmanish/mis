@@ -58,9 +58,9 @@ export default function Leave() {
       {/* scroll container */}
       <div className="max-h-[80vh] w-full overflow-y-auto overflow-x-auto">
         <table className="table-auto border-collapse w-full text-sm">
-          <thead className="bg-gray-100 text-base sticky top-0 z-10">
+          <thead className="bg-black/70 text-white text-center text-base sticky top-0 z-10">
             <tr>
-              <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
+              <th className="border border-gray-300 px-4 py-2 "> Faculty Name</th>
               <th className="border border-gray-300 px-4 py-2">Employee Code</th>
               <th className="border border-gray-300 px-4 py-2">Worked Days</th>
               {leaveTypes.map(type => (

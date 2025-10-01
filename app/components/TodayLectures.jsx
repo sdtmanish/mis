@@ -38,7 +38,7 @@ export default function TodayLectures() {
       <div className="max-h-[80vh] w-full overflow-y-auto overflow-x-auto ">
         <table className="border-collapse border border-gray-300  text-sm text-left ">
           {/* Table Head */}
-          <thead className="bg-gray-100 text-base sticky top-0 z-10">
+          <thead className="bg-black/70 text-white text-center text-base sticky top-0 z-10">
             <tr>
               <th className="w-[13%]  border border-gray-300 px-2 lg:px-4 py-2">Program Semester</th>
               <th className="w-[9%] border border-gray-300 px-2 lg:px-4 py-2">Faculty</th>
@@ -47,10 +47,10 @@ export default function TodayLectures() {
               <th className="w-[6%]  border border-gray-300 px-2 lg:px-4 py-2 text-center">Group</th>
               <th className="w-[6%]  border border-gray-300 px-2 lg:px-4 py-2 text-center">Period</th>
               <th className="w-[9%] border border-gray-300 px-2 lg:px-4 py-2">Attendance Status</th>
-              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2">Period Start</th>
-              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2">Period End</th>
-              <th className="w-[6%]  border border-gray-300 px-2 lg:px-4 py-2">Period Status</th>
-              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2 ">Engaged To</th>
+              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2">Period Starts</th>
+              <th className="w-[8%]  border border-gray-300 px-2 lg:px-4 py-2">Period Ends</th>
+              <th className="w-[7%]  border border-gray-300 px-2 lg:px-4 py-2">Period Status</th>
+              <th className="w-[7%]  border border-gray-300 px-2 lg:px-4 py-2 ">Engaged To</th>
               <th className="w-[7%]  border border-gray-300 px-2 lg:px-4 py-2">DPR Status</th>
             </tr>
           </thead>

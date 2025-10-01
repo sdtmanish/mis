@@ -9,6 +9,8 @@ export default function Utilization() {
     const [popupData, setPopupData] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
 
+    const rowColors = [  'bg-gray-100',  'bg-white']
+
     useEffect(() => {
 
         const fetchUtilizationDetails = async () => {
@@ -131,7 +133,7 @@ export default function Utilization() {
     return (
         <div className="text-gray-800 flex justify-center mt-12">
             <table className="border border-gray-300 w-[90vw] lg:w-[90vw] h-[80vh] ">
-                <thead className="bg-gray-100 ">
+                <thead className="bg-gray-100 text-lg ">
                     <tr >
                         <th className="border border-gray-300 px-2 py-3 font-bold ">S.No</th>
                         <th className="border border-gray-300 px-2 py-3 font-bold">Timings</th>
@@ -144,9 +146,9 @@ export default function Utilization() {
                 <tbody>
                     {timings.map((time, idx) => (
                         <tr key={idx}>
-                            <td className="border border-gray-300 px-2 py-1">{idx + 1}</td>
+                            <td className="border border-gray-300 px-2 py-1 text-center text-lg">{idx + 1}</td>
                             <td
-                                className="border border-gray-300 px-2 py-1"
+                                className="border border-gray-300 px-2 py-1 text-lg"
                                 dangerouslySetInnerHTML={{ __html: time }}
                             />
                             {days.map((day, j) => {
@@ -154,10 +156,10 @@ export default function Utilization() {
                                 return (
                                     <td
                                         key={j}
-                                        className="border border-gray-300 px-2 py-1 text-center cursor-pointer hover:bg-green-200 active:bg-green-200"
+                                        className="border border-gray-300 px-2 py-1 text-center cursor-pointer hover:bg-green-200 active:bg-green-200 font-bold text-xl"
                                         onClick={() => cell && handleClick(cell.ttdate, cell.periodcode)}
                                     >
-                                        {cell ? cell.dis : ''}
+                                        {cell ? cell.dis  : ''}
                                     </td>
                                 );
                             })}
@@ -192,15 +194,15 @@ export default function Utilization() {
         {/* Content */}
         <div className="overflow-y-auto overflow-x-hidden">
           <table className="w-[80vw] table-fixed border border-gray-300 border-t-0 border-collapse">
-            <thead className="bg-gray-100 sticky top-0 z-10">
-              <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700 w-1/4">
-                  Faculty
+            <thead className="bg-black/75 text-white sticky top-0 z-10">
+              <tr >
+                <th className="border border-gray-300 px-4 py-2 text-center font-semibold  w-1/4">
+                  Faculty Name
                 </th>
-                <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700 w-2/4 truncate">
-                  Program
+                <th className="border border-gray-300 px-4 py-2 text-center font-semibold  w-2/4 truncate">
+                  Program Semester
                 </th>
-                <th className="border border-gray-300 px-4 py-2 text-center font-semibold text-gray-700 w-1/4">
+                <th className="border border-gray-300 px-4 py-2 text-center font-semibold  w-1/4">
                   Students
                 </th>
               </tr>
@@ -209,7 +211,7 @@ export default function Utilization() {
               {popupData.map((i, index) => (
                 <tr
                   key={index}
-                  className="hover:bg-green-300/50 cursor-pointer transition"
+                  className={`${rowColors[index % rowColors.length]} hover:bg-green-300/50 cursor-pointer transition `}
                 >
                   <td className="border border-gray-300 px-4 py-2 text-left text-gray-700">
                     {i.faculty}
