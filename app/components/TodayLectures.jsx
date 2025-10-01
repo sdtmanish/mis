@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 
 export default function TodayLectures() {
   const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchLecturesData = async () => {
@@ -27,18 +29,30 @@ export default function TodayLectures() {
         setData(lecturesData);
       } catch (err) {
         console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchLecturesData();
   }, []);
 
+    if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-xl font-medium text-gray-600 animate-pulse">
+          Loading Data...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className=" text-gray-800 p-1 mt-8 flex justify-center">
       <div className="max-h-[80vh] w-full overflow-y-auto overflow-x-auto ">
         <table className="border-collapse border border-gray-300  text-sm text-left ">
           {/* Table Head */}
-          <thead className="bg-black/70 text-white text-center text-base sticky top-0 z-10">
+          <thead className="bg-slate-600 text-white text-center text-base sticky top-0 z-10">
             <tr>
               <th className="w-[13%]  border border-gray-300 px-2 lg:px-4 py-2">Program Semester</th>
               <th className="w-[9%] border border-gray-300 px-2 lg:px-4 py-2">Faculty</th>

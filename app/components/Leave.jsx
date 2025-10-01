@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 export default function Leave() {
   const [data, setData] = useState([]);
   const [leaveTypes, setLeaveTypes] = useState([]);
+      const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchLeave = async () => {
@@ -47,18 +48,30 @@ export default function Leave() {
         setLeaveTypes([...leaveTypeSet]);
       } catch (err) {
         console.log(err);
+      }finally {
+        setIsLoading(false);
       }
     };
 
     fetchLeave();
   }, []);
 
+   if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-xl font-medium text-gray-600 animate-pulse">
+          Loading Data...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4  text-gray-800 mt-8 flex justify-center">
       {/* scroll container */}
       <div className="max-h-[80vh] w-full overflow-y-auto overflow-x-auto">
         <table className="table-auto border-collapse w-full text-sm">
-          <thead className="bg-black/70 text-white text-center text-base sticky top-0 z-10">
+          <thead className="bg-slate-600 text-white text-center text-base sticky top-0 z-10">
             <tr>
               <th className="border border-gray-300 px-4 py-2 "> Faculty Name</th>
               <th className="border border-gray-300 px-4 py-2">Employee Code</th>
@@ -73,7 +86,7 @@ export default function Leave() {
 
           <tbody>
             {data.map((emp, index) => (
-              <tr key={index} className="hover:bg-green-200">
+              <tr key={index} className="hover:bg-green-200 cursor-pointer">
                 <td className="border border-gray-300 px-4 py-2">{emp.Name}</td>
                 <td className="border border-gray-300 px-4 py-2 text-center">{emp.EmployeeCode}</td>
                 <td className="border border-gray-300 px-4 py-2 text-center">{emp.WorkedDays}</td>

@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react'
 
 export default function EmployeeAttendanceSheet() {
   const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+
 
   useEffect(() => {
     const fetchEmployeeAttendanceSheet = async () => {
@@ -26,17 +29,29 @@ export default function EmployeeAttendanceSheet() {
 
       } catch (err) {
         console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchEmployeeAttendanceSheet();
   }, []);
 
+
+   if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-xl font-medium text-gray-600 animate-pulse">
+          Loading timetable...
+        </div>
+      </div>
+    );
+  }
   return (
 <div className="text-gray-800 w-full flex justify-center max-h-[80vh] mt-12 overflow-y-auto overflow-x-auto">
   <div className="w-full border-b border-gray-300">
     <table className="min-w-[900px] border border-gray-300 text-sm">
-      <thead className="bg-gray-100 sticky top-0 z-10 text-base text-gray-800">
+      <thead className="bg-slate-600  sticky top-0 z-10 text-base text-white">
         <tr>
           <th className="w-[11%] px-1 lg:px-2 py-2 border border-gray-300 font-semibold ">Code</th>
           <th className="w-[10%] px-2 lg:px-4 py-2 border border-gray-300 font-semibold">Name</th>

@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Image from 'next/image';
 import DailyTimeTable from "./components/DailyTimeTable";
 import TodayLectures from './components/TodayLectures';
 import Leave from './components/Leave';
@@ -23,14 +24,26 @@ const tabs = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState('daily-time-table');
 
+  useEffect(()=>{
+    const savedTab = localStorage.getItem('activeTab');
+    if(savedTab){
+      setActiveTab(savedTab);
+    }
+  },[]);
+
+  const handleTabClick = (tabId)=>{
+    setActiveTab(tabId);
+    localStorage.setItem('activeTab',tabId)
+  }
+
   return (
-    <div className="p-4 ">
+    <div className="px-4 py-1 ">
 <div className="sticky top-0 z-50 bg-white shadow-md">
   {/* Top bar */}
   <div className="flex items-center justify-between px-6 py-3 border-b border-gray-200">
     <div className="flex items-center gap-3">
       {/* Logo placeholder */}
-      <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-lg"></div>
+      <div className="w-8 h-8 bg-gradient-to-tr from-blue-200 to-indigo-200 rounded-lg"><Image src="/assets/DolphinLogo.png" width="30" height="30" alt="Logo" /></div>
       <h1 className="text-lg font-semibold text-gray-700">MIS Dashboard</h1>
     </div>
     <div className="text-sm text-gray-500">Welcome, User 👋</div>
@@ -47,7 +60,7 @@ export default function Home() {
             ? 'text-blue-600' 
             : 'text-gray-600 hover:text-gray-800'}
         `}
-        onClick={() => setActiveTab(tab.id)}
+        onClick={() => handleTabClick(tab.id)}
       >
         {tab.name}
         {activeTab === tab.id && (
