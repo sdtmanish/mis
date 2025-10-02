@@ -158,7 +158,49 @@ export default function Utilization() {
 
 
   return (
-    <div className="text-gray-800 flex justify-center mt-12">
+    <div className="text-gray-800 flex flex-col justify-center items-center mt-2">
+    
+
+    {/* //dropdowns */}
+    <div className="w-full flex flex-row justify-center gap-8 mb-2">
+ <div className="relative w-[200px]">
+  <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
+    <option>Session</option>
+  </select>
+  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
+</div>
+  <div className="relative w-[200px]">
+  <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
+    <option>Month</option>
+  </select>
+  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
+</div>
+<div className="relative w-[200px]">
+  <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
+    <option>Week</option>
+  </select>
+  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
+</div>
+  <div className="relative w-[200px]">
+  <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
+    <option>College</option>
+  </select>
+  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
+</div>
+  <div className="relative w-[200px]">
+  <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
+    <option>Program Type</option>
+  </select>
+  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
+</div>
+ <div className="relative w-[200px]">
+  <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
+    <option>Building Blocks</option>
+  </select>
+  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
+</div>
+</div>
+
       {/* Main Table */}
       <table className="border border-gray-300 w-[90vw] lg:w-[90vw] h-[80vh]">
         <thead className="bg-slate-600 text-white text-lg">
@@ -178,11 +220,11 @@ export default function Utilization() {
 <tbody>
   {timings.map((time, idx) => (
     <tr key={idx}>
-      <td className="border border-gray-300 px-2 py-1 text-center text-lg">
+      <td className="border border-slate-400 px-2 py-1 text-center text-lg">
         {idx + 1}
       </td>
       <td
-        className="border border-gray-300 px-2 py-1 text-lg text-center font-normal"
+        className="border border-slate-400 px-2 py-1 text-lg text-center font-normal"
         dangerouslySetInnerHTML={{ __html: time }}
       />
       {days.map((day, j) => {
@@ -191,7 +233,7 @@ export default function Utilization() {
           <td
             key={j}
             className={`
-              border border-gray-300 px-2 py-1 text-center cursor-pointer font-normal text-xl 
+              border border-slate-400 px-2 py-1 text-center cursor-pointer font-normal text-xl 
               hover:bg-green-200
               ${selectedCell === `${time}-${day}` && 'bg-orange-300/50'}
             `}
@@ -206,7 +248,7 @@ export default function Utilization() {
               <div className="relative w-full h-[60px] flex items-center justify-between bg-transparent">
                 
                 {/* Chart on LEFT side */}
-                <div className="w-[25%] h-full bg-transparent z-55">
+                <div className="w-[22%] h-full bg-transparent z-55">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={getAttendanceChartData(popupData)}
@@ -222,12 +264,12 @@ export default function Utilization() {
                 </div>
 
                 {/* Overlay TEXT in CENTER */}
-                <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-black px-1 rounded pointer-events-none">
+                <span className="absolute inset-0 flex items-center justify-center text-base font-semibold text-black px-1 rounded pointer-events-none">
                   {cell.dis} {Number(cell.dis) === 1 ? "class" : "classes"}
                 </span>
 
                 {/* Chart on RIGHT side */}
-                <div className="w-[25%] h-full bg-transparent z-60">
+                <div className="w-[22%] h-full bg-transparent z-60">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={getAttendanceChartData(popupData)}
@@ -239,7 +281,7 @@ export default function Utilization() {
                       <Bar dataKey="value" fill="#94a3b8" /> {/* different color */}
                     </BarChart>
                   </ResponsiveContainer>
-                  <p className="text-[10px] font-bold text-center">Utilisation</p>
+                  <p className="text-[10px] font-bold text-center">Seats</p>
                 </div>
               </div>
             ) : null}
