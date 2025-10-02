@@ -38,7 +38,7 @@ export default function DailyTimeTable() {
             'Content-Type': 'application/json',
             'APIKey': "Sdt!@#321"
           },
-          body: JSON.stringify({ date: "2025-09-25" })
+          body: JSON.stringify({ date: new Date().toISOString().split("T")[0] })
         });
 
         if (!response.ok) {

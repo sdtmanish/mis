@@ -5,6 +5,7 @@ import { HiMiniChevronUpDown } from 'react-icons/hi2'
 import { useSortData } from '../Hooks/useSortData' 
 import * as XLSX from 'xlsx';
 import {saveAs} from 'file-saver'
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function Utilization() {
   const nodeRef = useRef(null)
@@ -30,7 +31,7 @@ export default function Utilization() {
               'Content-Type': 'application/json',
               'APIKey': 'Sdt!@#321',
             },
-            body: JSON.stringify({ date: '2025-09-29' }),
+           body: JSON.stringify({ date: new Date().toISOString().split("T")[0] })
           }
         )
 
@@ -49,9 +50,26 @@ export default function Utilization() {
   }, [])
 
 
-  
+  // helper: parse AttStatus into present/absent values
+  const getAttendanceChartData = (popupData) => {
+    let present = 0;
+    let total = 0;
 
+    popupData.forEach((item) => {
+      if (item.AttStatus && item.AttStatus.includes("/")) {
+        const [p, t] = item.AttStatus.split("/").map(Number);
+        present += p;
+        total += t;
+      }
+    });
 
+    const absent = total - present;
+
+    return [
+      { name: "Total", value: total },
+      { name: "Absent", value: absent }
+    ];
+  };
 
 
   if (!data || data.length === 0) {
@@ -157,50 +175,87 @@ export default function Utilization() {
             ))}
           </tr>
         </thead>
+<tbody>
+  {timings.map((time, idx) => (
+    <tr key={idx}>
+      <td className="border border-gray-300 px-2 py-1 text-center text-lg">
+        {idx + 1}
+      </td>
+      <td
+        className="border border-gray-300 px-2 py-1 text-lg text-center font-normal"
+        dangerouslySetInnerHTML={{ __html: time }}
+      />
+      {days.map((day, j) => {
+        const cell = pivot[time][day];
+        return (
+          <td
+            key={j}
+            className={`
+              border border-gray-300 px-2 py-1 text-center cursor-pointer font-normal text-xl 
+              hover:bg-green-200
+              ${selectedCell === `${time}-${day}` && 'bg-orange-300/50'}
+            `}
+            onClick={() => {
+              if (cell) {
+                handleClick(cell.ttdate, cell.periodcode);
+                setSelectedCell(`${time}-${day}`);
+              }
+            }}
+          >
+            {cell ? (
+              <div className="relative w-full h-[60px] flex items-center justify-between bg-transparent">
+                
+                {/* Chart on LEFT side */}
+                <div className="w-[25%] h-full bg-transparent z-55">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={getAttendanceChartData(popupData)}
+                      layout="horizontal"
+                      margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+                    >
+                      <XAxis type="category" dataKey="name" hide />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="#14b8a6" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <p className="text-[10px] font-bold text-center">Strength</p>
+                </div>
 
-        <tbody>
-          {timings.map((time, idx) => (
-            <tr key={idx}>
-              <td className="border border-gray-300 px-2 py-1 text-center text-lg">
-                {idx + 1}
-              </td>
-              <td
-                className="border border-gray-300 px-2 py-1 text-lg text-center font-normal"
-                dangerouslySetInnerHTML={{ __html: time }}
-              />
-              {days.map((day, j) => {
-                const cell = pivot[time][day]
-                return (
-                  <td
-                    key={j}
-                  className={`
-  border border-gray-300 px-2 py-1 text-center cursor-pointer font-normal text-xl 
-  hover:bg-green-200
-  ${selectedCell === `${time}-${day}` ? 'bg-orange-300/50' : rowColors[j % rowColors.length]}
-`}
+                {/* Overlay TEXT in CENTER */}
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-black px-1 rounded pointer-events-none">
+                  {cell.dis} {Number(cell.dis) === 1 ? "class" : "classes"}
+                </span>
 
-                    onClick={() => {
-                      if (cell) {
-                        handleClick(cell.ttdate, cell.periodcode);
-                        setSelectedCell(`${time}-${day}`);
-                      }
-                    }}
-                  >
-                    {cell
-                      ? `${cell.dis} ${Number(cell.dis) === 1 ? 'class' : 'classes'}`
-                      : ''}
-                  </td>
+                {/* Chart on RIGHT side */}
+                <div className="w-[25%] h-full bg-transparent z-60">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={getAttendanceChartData(popupData)}
+                      layout="horizontal"
+                      margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+                    >
+                      <XAxis type="category" dataKey="name" hide />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="#94a3b8" /> {/* different color */}
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <p className="text-[10px] font-bold text-center">Utilisation</p>
+                </div>
+              </div>
+            ) : null}
+          </td>
+        );
+      })}
+    </tr>
+  ))}
+</tbody>
 
-                )
-              })}
-            </tr>
-          ))}
-        </tbody>
+
       </table>
 
       {/* Popup */}
       {isOpen && popupData && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-99">
           <Draggable handle=".drag-handle" nodeRef={nodeRef}>
             <div
               ref={nodeRef}
@@ -215,17 +270,17 @@ export default function Utilization() {
 
                 <div className=" flex flex-row justify-center items-center gap-2">
                   <button 
-                  onClick={()=> exportToExcel(sortedData, 'UtilizationData.xlsx')}
-                  className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-1 rounded-sm cursor-pointer"
+                    onClick={()=> exportToExcel(sortedData, 'UtilizationData.xlsx')}
+                    className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-1 rounded-sm cursor-pointer"
                   >
                     To Excel
                   </button>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-gray-800 hover:text-gray-700 px-2 py-1 rounded-full hover:bg-gray-200 active:bg-gray-100 cursor-pointer"
-                >
-                  ✕
-                </button>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="text-gray-800 hover:text-gray-700 px-2 py-1 rounded-full hover:bg-gray-200 active:bg-gray-100 cursor-pointer"
+                  >
+                    ✕
+                  </button>
                 </div>
               </div>
 
@@ -245,12 +300,10 @@ export default function Utilization() {
                       <th className="border border-gray-300 px-4 py-2 text-center font-semibold w-2/4 truncate cursor-pointer"
                         onClick={() => requestSort('program')}
                       >
-
                         <div className="flex flex-row justify-center items-center gap-1">
                           Program Semester <HiMiniChevronUpDown size={16} />
                           {sortConfig?.key == 'program'}
                         </div>
-
                       </th>
                       <th
                         onClick={() => requestSort('students')}
@@ -258,9 +311,7 @@ export default function Utilization() {
                       >
                         <div className="flex flex-row justify-center items-center gap-1">
                           Students <HiMiniChevronUpDown size={16} />
-                          {sortConfig?.key === 'students'
-
-                          }
+                          {sortConfig?.key === 'students'}
                         </div>
                       </th>
                       <th className="border border-gray-300 px-4 py-2 text-center font-semibold w-1/4">
