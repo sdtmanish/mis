@@ -51,25 +51,26 @@ export default function Utilization() {
 
 
   // helper: parse AttStatus into present/absent values
-  const getAttendanceChartData = (popupData) => {
-    let present = 0;
-    let total = 0;
+const getAttendanceChartData = (popupData) => {
+  let present = 0;
+  let total = 0;
 
-    popupData.forEach((item) => {
-      if (item.AttStatus && item.AttStatus.includes("/")) {
-        const [p, t] = item.AttStatus.split("/").map(Number);
-        present += p;
-        total += t;
-      }
-    });
+  popupData.forEach((item) => {
+    if (item.AttStatus && item.AttStatus.includes("/")) {
+      const [p, t] = item.AttStatus.split("/").map(Number);
+      present += p;
+      total += t;
+    }
+  });
 
-    const absent = total - present;
+  const absent = total - present;
 
-    return [
-      { name: "Total", value: total },
-      { name: "Absent", value: absent }
-    ];
-  };
+  // Return both fields in one object
+  return [
+    { name: "Student Strength", present, absent, total }
+  ];
+};
+
 
 
   if (!data || data.length === 0) {
@@ -233,7 +234,7 @@ export default function Utilization() {
           <td
             key={j}
             className={`
-              border border-slate-400 px-2 py-1 text-center cursor-pointer font-normal text-xl 
+              border border-slate-400 px-2 py-1 text-center cursor-pointer font-normal text-2xl 
               hover:bg-green-200
               ${selectedCell === `${time}-${day}` && 'bg-orange-300/50'}
             `}
@@ -248,7 +249,7 @@ export default function Utilization() {
               <div className="relative w-full h-[60px] flex items-center justify-between bg-transparent">
                 
                 {/* Chart on LEFT side */}
-                <div className="w-[22%] h-full bg-transparent z-55">
+                <div className="w-[22%] h-full bg-transparent z-55 text-base font-bold">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={getAttendanceChartData(popupData)}
@@ -257,19 +258,21 @@ export default function Utilization() {
                     >
                       <XAxis type="category" dataKey="name" hide />
                       <Tooltip />
-                      <Bar dataKey="value" fill="#14b8a6" />
+                     
+    <Bar dataKey="total" fill="#14b8a6" />   {/* red for absent */}
+    <Bar dataKey="present" fill="#14b8a6" /> {/* green for present */}
                     </BarChart>
                   </ResponsiveContainer>
-                  <p className="text-[10px] font-bold text-center">Strength</p>
+                  <p className="text-[10px] font-bold text-lg  text-center">Strength</p>
                 </div>
 
                 {/* Overlay TEXT in CENTER */}
-                <span className="absolute inset-0 flex items-center justify-center text-base font-semibold text-black px-1 rounded pointer-events-none">
+                <span className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-black px-1 rounded pointer-events-none">
                   {cell.dis} {Number(cell.dis) === 1 ? "class" : "classes"}
                 </span>
 
                 {/* Chart on RIGHT side */}
-                <div className="w-[22%] h-full bg-transparent z-60">
+                <div className="w-[22%] h-full bg-transparent z-60 text-base font-bold">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={getAttendanceChartData(popupData)}
@@ -278,7 +281,9 @@ export default function Utilization() {
                     >
                       <XAxis type="category" dataKey="name" hide />
                       <Tooltip />
-                      <Bar dataKey="value" fill="#94a3b8" /> {/* different color */}
+                       
+    <Bar dataKey="total" fill="#94a3b8" />   {/* red for absent */}
+    <Bar dataKey="present" fill="#94a3b8" /> {/* green for present */}
                     </BarChart>
                   </ResponsiveContainer>
                   <p className="text-[10px] font-bold text-center">Seats</p>
@@ -305,10 +310,11 @@ export default function Utilization() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="drag-handle flex justify-between items-center px-4 py-2 cursor-move bg-gray-50 border-b border-gray-300">
+              <div className="drag-handle flex justify-between items-center px-4 py-2 cursor-move bg-gray-50 border-b border-slate-600">
                 <h2 className="text-lg font-medium text-gray-700">
                   Class Strength Details
-                </h2>
+                </h2> 
+                <h2 className="text-gray-700">{popupData[0]?.date}</h2>
 
                 <div className=" flex flex-row justify-center items-center gap-2">
                   <button 
@@ -328,8 +334,8 @@ export default function Utilization() {
 
               {/* Popup Content */}
               <div className="overflow-y-auto overflow-x-hidden">
-                <table className="w-[80vw] table-fixed border border-gray-300 border-t-0 border-collapse">
-                  <thead className="bg-slate-600 text-white sticky top-0 z-10">
+                <table className="w-[80vw] table-fixed border border-gray-300 border-t border-collapse">
+                  <thead className="bg-slate-600 border-t border-slate-600 text-white sticky top-0 z-20">
                     <tr>
                       <th className="border border-gray-300 px-4 py-2 text-center font-semibold w-1/4 cursor-pointer"
                         onClick={() => requestSort('faculty')}
