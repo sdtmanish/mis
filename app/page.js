@@ -38,24 +38,24 @@ export default function Home() {
 
   return (
     <div className="px-4 ">
-<div className="sticky top-0 z-50 bg-white shadow-md">
+<div className="sticky top-0 z-999 bg-white shadow-md">
   {/* Top bar */}
-  <div className="flex items-center justify-between px-6 py-3 border-b border-gray-200">
+  <div className="flex items-center justify-between px-6 py-2 border-b border-gray-200">
     <div className="flex items-center gap-3">
       {/* Logo placeholder */}
       <div className="w-8 h-8 bg-gradient-to-tr from-blue-200 to-indigo-200 rounded-lg"><Image src="/assets/DolphinLogo.png" width="30" height="30" alt="Logo" /></div>
       <h1 className="text-lg font-semibold text-gray-700">MIS Dashboard</h1>
     </div>
-    <div className="text-sm text-gray-500">Welcome, User 👋</div>
+    <div className="text-base font-bold text-gray-800">Welcome, User 👋</div>
   </div>
 
   {/* Tabs */}
-  <div className="flex flex-wrap justify-center gap-6 px-6 bg-gray-50">
+  <div className="flex flex-wrap justify-center gap-2 px-2 py-2 2xl:gap-4  bg-gray-50">
     {tabs.map(tab => (
       <button
         key={tab.id}
         className={`
-          relative px-3 py-3 text-base font-bold transition-colors cursor-pointer
+          relative px-2 py-1 text-sm 2xl:text-base font-bold transition-colors cursor-pointer
           ${activeTab === tab.id 
             ? 'text-blue-600' 
             : 'text-gray-600 hover:text-gray-800'}
