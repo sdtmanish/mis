@@ -14,15 +14,20 @@ export default function Utilization() {
   const [selectedCell, setSelectedCell] = useState(null);
   const [popupData, setPopupData] = useState([])
   const [isOpen, setIsOpen] = useState(false)
+  const isFirstRender = useRef(true);
+  const [loading, setLoading] = useState(false);
 
-//dropdowns states
+
+  //dropdowns states
   const [buildingBlocks, setBuildingBlocks] = useState([]);
   const [programTypes, setProgramTypes] = useState([]);
-  const [colleges, setColleges]= useState([])
+  const [colleges, setColleges] = useState([])
   const [selectedFilters, setSelectedFilters] = useState({
-    programType: '',
-    college:'',
-    block:'',
+    programtype: '',
+    college: '',
+    buildingblock: '',
+    month: '',
+    week: ''
   })
 
 
@@ -33,92 +38,188 @@ export default function Utilization() {
 
   const rowColors = ['bg-sky-100', 'bg-white']
 
+  // 🟢 1️⃣ On first mount — load dropdown data + initial unfiltered table
   useEffect(() => {
     const fetchUtilizationDetails = async () => {
       try {
+        setLoading(true);
 
-        const apis = [
-          {
-            name:'utilizationDetails',
-            url: 'http://dolphinapi.myportal.co.in/api/ClassRoomUtilisation',
-            method: 'POST',
-            body: { date: new Date().toISOString().split("T")[0] }
-          },
-          {
-            name: 'programTypes',
-            url: 'http://dolphinapi.myportal.co.in/api/Display/listofprogramtypes',
-            method: 'GET'
-          },
-          {
-            name:'colleges',
-            url: 'http://dolphinapi.myportal.co.in/api/Display/listofcolleges',
-            method: 'GET'
-          },
-          {
-            name:'buildingBlocks',
-            url: 'http://dolphinapi.myportal.co.in/api/Display/listofblocks',
-            method: 'GET'
-          }
-        ]
-         
+        const [programRes, collegeRes, blockRes] = await Promise.all([
+          fetch("http://dolphinapi.myportal.co.in/api/Display/listofprogramtypes", {
+            method: "GET",
+            headers: { APIKey: "Sdt!@#321" },
+          }),
+          fetch("http://dolphinapi.myportal.co.in/api/Display/listofcolleges", {
+            method: "GET",
+            headers: { APIKey: "Sdt!@#321" },
+          }),
+          fetch("http://dolphinapi.myportal.co.in/api/Display/listofblocks", {
+            method: "GET",
+            headers: { APIKey: "Sdt!@#321" },
+          }),
+        ]);
 
-        //preparing all fetches
-        const requests = apis.map(api => {
-          const options = {
-            method: api.method,
-            headers: {
-               'Content-Type': 'application/json',
-              'APIKey': 'Sdt!@#321',
+        const [programTypes, colleges, buildingBlocks] = await Promise.all([
+          programRes.json(),
+          collegeRes.json(),
+          blockRes.json(),
+        ]);
 
-            }
-          }
+        setProgramTypes(programTypes);
+        setColleges(colleges);
+        setBuildingBlocks(buildingBlocks);
 
-          if(api.method === 'POST' && api.body){
-            options.body = JSON.stringify(api.body);
-          }
-
-          return fetch(api.url, options);
-        })
-
-
-        //Run in Parallel 
-        const responses = await Promise.all(requests);
-
-       const failed = responses.find(r => !r.ok);
-       if(failed) throw new Error(`HTTP Erroor: ${failed.status}`);
-
-
-       //parsing json for all
-       const results = await Promise.all(responses.map(r=> r.json()));
-
-       const dataMap = {};
-
-       apis.forEach((api, index)=>{
-        dataMap[api.name] = results[index];
-       })
-      
-
-        setData(dataMap.utilizationDetails);
-        setProgramTypes(dataMap.programTypes);
-        setColleges(dataMap.colleges);
-        setBuildingBlocks(dataMap.buildingBlocks)
-
+        // 🔹 Initial unfiltered data (current date)
+        await fetchFilteredUtilization();
       } catch (err) {
-        console.log("Error fetching multiple APIs", err)
+        console.log("Error fetching multiple APIs", err);
+      } finally {
+        setLoading(false);
       }
+    };
+
+    fetchUtilizationDetails();
+  }, []);
+
+
+  // 🟡 2️⃣ When Month + Week are both selected → fetch filtered data
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
     }
 
-    fetchUtilizationDetails()
-  }, [])
+    const bothSelected =
+      selectedFilters.month !== "" && selectedFilters.week !== "";
+
+    const bothEmpty =
+      selectedFilters.month === "" && selectedFilters.week === "";
+
+    setIsOpen(false);
+    setSelectedCell(null);
+    setPopupData([]);
+
+    if (bothSelected) {
+      // ✅ User picked both → fetch filtered data
+      fetchFilteredUtilization();
+    } else if (bothEmpty) {
+      // ✅ User cleared both → fetch unfiltered (default) data
+      fetchFilteredUtilization();
+    }
+  }, [selectedFilters.month, selectedFilters.week]);
+
+
+  // 🔵 3️⃣ When Program Type / College / Building Block change → always fetch (even when cleared)
+  useEffect(() => {
+    if (!isFirstRender.current) {
+      setIsOpen(false);
+      setSelectedCell(null);
+      setPopupData([]);
+      fetchFilteredUtilization();
+    }
+  }, [
+    selectedFilters.college,
+    selectedFilters.programtype,
+    selectedFilters.buildingblock,
+  ]);
+
+
+  const fetchFilteredUtilization = async () => {
+    try {
+      setLoading(true);
+
+      // Compute date:
+      let computedDate;
+
+      if (selectedFilters.month && selectedFilters.week) {
+        computedDate = getDateForMonthWeek(
+          Number(selectedFilters.month),
+          Number(selectedFilters.week)
+        );
+      } else {
+        // Default to today’s date if no month/week selected
+        computedDate = new Date().toISOString().split("T")[0];
+      }
+
+      console.log("📅 Using date:", computedDate);
+
+      const body = {
+        date: computedDate, // ✅ Always send something valid
+        programTypeId: selectedFilters.programtype
+          ? Number(selectedFilters.programtype)
+          : 0,
+        BlockId: selectedFilters.buildingblock
+          ? Number(selectedFilters.buildingblock)
+          : 0,
+        CollegeId: selectedFilters.college
+          ? Number(selectedFilters.college)
+          : 0,
+      };
+
+      const res = await fetch(
+        "http://dolphinapi.myportal.co.in/api/ClassRoomUtilisation",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "APIKey": "Sdt!@#321",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+
+      const data = await res.json();
+      setData(data);
+    } catch (err) {
+      console.log("Error fetching utilization details:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  //helper function for getting date from month and week
+  const getDateForMonthWeek = (month, week) => {
+
+    if (month === "" || week === "") return null;
+
+
+    const year = new Date().getFullYear();
+
+    const firstDayOfMonth = new Date(year, month, 1);
+
+    const firstMonday = new Date(firstDayOfMonth);
+    while (firstMonday.getDay() !== 1) {
+      firstMonday.setDate(firstMonday.getDate() + 1);
+    }
+
+    const targetDate = new Date(firstMonday);
+    targetDate.setDate(firstMonday.getDate() + (week) * 7);
+
+    return targetDate.toISOString().split("T")[0];
+  }
+
+
+
+  useEffect(() => {
+    // Close popup and reset selected cell when filters change
+    setIsOpen(false);
+    setSelectedCell(null);
+    setPopupData([]);
+  }, [selectedFilters]);
+
 
 
   // LEFT CHART — Attendance vs Enrolled
   const getStudentAttendanceChartData = (cell) => {
-    const present = Number(cell?.TotalPresent || 0);
     const total = Number(cell?.TotalStudents || 0);
+    const present = Number(cell?.TotalPresent || 0);
+
     const absent = total - present;
 
-    return [{ name: "Students", present, absent, total }];
+    return [{ name: "Students", total, present, absent, }];
   };
 
   // RIGHT CHART — Attendance vs Room Capacity
@@ -130,13 +231,22 @@ export default function Utilization() {
   };
 
 
-  if (!data || data.length === 0) {
+  if (loading) {
     return (
-      <p className="text-black flex justify-center items-center mt-12 ">
+      <p className="text-black flex justify-center items-center mt-12">
         Loading Data...
       </p>
-    )
+    );
   }
+
+  if (!data || data.length === 0) {
+    return (
+      <p className="text-black flex justify-center items-center mt-12">
+        No data available.
+      </p>
+    );
+  }
+
 
   // 🔹 Days (columns)
   const dayObjects = Array.from(
@@ -218,12 +328,12 @@ export default function Utilization() {
   return (
     <div className="text-gray-800 flex flex-col justify-center items-center mt-2">
 
-      <UtilizationDropdown  
-      programTypes={programTypes}
-      colleges={colleges}
-      buildingBlocks={buildingBlocks}
-      selectedFilters={selectedFilters}
-      onFilterChange={setSelectedFilters}
+      <UtilizationDropdown
+        programTypes={programTypes}
+        colleges={colleges}
+        buildingBlocks={buildingBlocks}
+        selectedFilters={selectedFilters}
+        onFilterChange={setSelectedFilters}
 
       />
 
@@ -257,71 +367,137 @@ export default function Utilization() {
               {days.map((day, j) => {
                 const cell = pivot[time][day];
                 return (
-                  <td
-                    key={j}
-                    className={`
-              border border-slate-400 px-2 py-1 text-center cursor-pointer font-normal text-2xl 
-              hover:bg-green-200
-              ${selectedCell === `${time}-${day}` && 'bg-orange-300/50'}
-            `}
-                    onClick={() => {
-                      if (cell) {
-                        handleClick(cell.ttdate, cell.periodcode);
-                        setSelectedCell(`${time}-${day}`);
-                      }
-                    }}
-                  >
-                    {cell ? (
-                      <div className="relative w-full h-[60px] flex items-center justify-between bg-transparent p-0.3">
+                 <td
+  key={j}
+  className={`
+    border border-slate-400 px-2 py-1 text-center cursor-pointer font-normal text-2xl 
+    hover:bg-green-200
+    ${selectedCell === `${time}-${day}` && "bg-orange-300/50"}
+  `}
+  onClick={() => {
+    if (cell) {
+      handleClick(cell.ttdate, cell.periodcode);
+      setSelectedCell(`${time}-${day}`);
+    }
+  }}
+>
+  {cell ? (() => {
+  // 🕓 Extract timing and build Date object
+  const timeMatch = cell.Timings.match(/(\d{1,2}:\d{2})/);
+  const startTime = timeMatch ? timeMatch[1] : "00:00";
+  const classDateTime = new Date(`${cell.ttdate.split("T")[0]}T${startTime}:00`);
+  const now = new Date();
 
-                        {/* LEFT CHART — Present vs Total Students */}
-                        <div className="w-[22%] h-full bg-transparent z-55 text-base font-bold">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                              data={getStudentAttendanceChartData(cell)}
-                              layout="horizontal"
-                              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-                            >
-                              <XAxis type="category" dataKey="name" hide />
-                              <Tooltip />
-                              {/* 🟢 Total Students */}
-                              <Bar dataKey="total" fill="#14b8a6" />
-                              {/* 🔵 Present Students */}
-                              <Bar dataKey="present" fill="#0f766e" />
-                            </BarChart>
-                          </ResponsiveContainer>
-                          <p className="text-[10px] 2xl:text-xs font-bold text-lg text-center text-slate-700">Students</p>
-                        </div>
+  // 🧮 Convert values
+  const totalClassStrength = Number(cell.TotalClassStrength);
+  const totalStudents = Number(cell.TotalStudents);
+  const totalPresent = Number(cell.TotalPresent);
 
-                        {/* Center Overlay Text */}
-                        <span className="absolute inset-0 flex items-center justify-center text-sm xl:text-lg font-semibold text-black px-1 rounded pointer-events-none">
-                          {cell.dis} {Number(cell.dis) === 1 ? "class" : "classes"}
-                        </span>
+  // 🧭 Determine status
+  let classStatus = "";
+  if (now < classDateTime) {
+    classStatus = "future"; // 🟡 To be held
+  } else if (
+    now >= classDateTime &&
+    totalClassStrength === 0 &&
+    totalStudents === 0 &&
+    totalPresent === 0
+  ) {
+    classStatus = "missed"; // 🔴 Didn’t happen
+  } else if (now >= classDateTime) {
+    classStatus = "completed"; // 🟢 Happened
+  }
 
-                        {/* RIGHT CHART — Present vs Total Class Strength */}
-                        <div className="w-[22%] h-full bg-transparent z-60 text-base font-bold">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                              data={getClassStrengthChartData(cell)}
-                              layout="horizontal"
-                              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-                            >
-                              <XAxis type="category" dataKey="name" hide />
-                              <Tooltip />
-                              {/* 🩶 Total Class Strength */}
-                              <Bar dataKey="totalStrength" fill="#94a3b8" />
-                              {/* ⚫ Present Students */}
-                              <Bar dataKey="present" fill="#334155" />
-                            </BarChart>
-                          </ResponsiveContainer>
-                          <p className="text-[10px] 2xl:text-xs  font-bold text-center text-slate-700">Strength</p>
-                        </div>
+  // 🧩 Render
+  return (
+    <div className="relative w-full min-h-[80px] flex flex-col items-center justify-center bg-transparent p-1">
+      
+      {/* ALWAYS SHOW class count */}
+      <span className="text-base xl:text-lg font-semibold text-black text-center mb-1">
+        {cell.dis} {Number(cell.dis) === 1 ? "class" : "classes"}
+      </span>
 
+      {/* 🟢 Show charts only if completed */}
+      {classStatus === "completed" && (
+        <div className="w-full flex items-center justify-between mb-1">
+          {/* LEFT CHART — Students */}
+          <div className="w-[22%] h-[45px] bg-transparent z-30">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={getStudentAttendanceChartData(cell)}
+                layout="horizontal"
+                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+              >
+                <XAxis type="category" dataKey="name" hide />
+                <Tooltip
+                  content={({ payload }) => {
+                    if (!payload || !payload.length) return null;
+                    const total = payload.find(p => p.dataKey === "total")?.value;
+                    const present = payload.find(p => p.dataKey === "present")?.value;
+                    return (
+                      <div className="bg-white border border-gray-300 rounded-md px-2 py-2 text-sm shadow-md w-[150px]">
+                        <p className="font-semibold text-slate-700 mb-1 text-base">Students</p>
+                        <p className="text-teal-600 ">Total: {total}</p>
+                        <p className="text-emerald-700">Present: {present}</p>
                       </div>
-                    ) : null}
+                    );
+                  }}
+                />
+                <Bar dataKey="total" fill="#14b8a6" />
+                <Bar dataKey="present" fill="#0f766e" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* RIGHT CHART — Seats */}
+          <div className="w-[22%] h-[45px] bg-transparent z-50">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={getClassStrengthChartData(cell)}
+                layout="horizontal"
+                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+              >
+                <XAxis type="category" dataKey="name" hide />
+                <Tooltip
+                  content={({ payload }) => {
+                    if (!payload || !payload.length) return null;
+                    const totalStrength = payload.find(p => p.dataKey === "totalStrength")?.value;
+                    const present = payload.find(p => p.dataKey === "present")?.value;
+                    return (
+                      <div className="bg-white border border-gray-300 rounded-md px-2 py-2 text-sm shadow-md w-[150px]">
+                        <p className="font-semibold text-slate-700 mb-1 text-base">Seats</p>
+                        <p className="text-gray-500 ">Total: {totalStrength}</p>
+                        <p className="text-slate-700">Occupied: {present}</p>
+                      </div>
+                    );
+                  }}
+                />
+                <Bar dataKey="totalStrength" fill="#94a3b8" />
+                <Bar dataKey="present" fill="#334155" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* 🟡🔴 Status line BELOW classes */}
+      {classStatus === "future" && (
+        <p className="text-gray-500 italic text-sm font-medium mt-1 animate-fadeIn">
+          To be held
+        </p>
+      )}
+      {classStatus === "missed" && (
+        <p className="text-red-600 italic text-sm font-medium mt-1 animate-fadeIn">
+          Class didn’t happen
+        </p>
+      )}
+    </div>
+  );
+})() : null}
 
 
-                  </td>
+</td>
+
                 );
               })}
             </tr>
@@ -346,6 +522,7 @@ export default function Utilization() {
                   Class Strength Details
                 </h2>
                 <h2 className="text-gray-700">{popupData[0]?.date}</h2>
+                <h2 className="text-gray-700 text-lg">Total Classes: {popupData.length}</h2>
 
                 <div className=" flex flex-row justify-center items-center gap-2">
                   <button

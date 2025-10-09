@@ -13,6 +13,9 @@ export default function UtilizationDropdown({
         onFilterChange({...selectedFilters, [key]:value});
     }
 
+
+    
+
     return (
 
     
@@ -20,18 +23,42 @@ export default function UtilizationDropdown({
  <div className="relative w-[200px]">
   <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
     <option>Session</option>
+    <option>2025-2026</option>
   </select>
   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
 </div>
   <div className="relative w-[200px]">
-  <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
-    <option>Month</option>
+  <select
+  value={selectedFilters.month}
+   onChange={(e)=> handleChange('month',e.target.value)}
+   className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
+    <option value="">Month</option>
+    <option value="0">Jan</option>
+    <option value="1">Feb</option>
+    <option value="2">Mar</option>
+    <option value="3">Apr</option>
+    <option value="4">May</option>
+    <option value="5">June</option>
+    <option value="6">July</option>
+    <option value="7">Aug</option>
+    <option value="8">Sep</option>
+    <option value="9">Oct</option>
+    <option value="10">Nov</option>
+    <option value="11">Dec</option>
   </select>
   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
 </div>
 <div className="relative w-[200px]">
-  <select className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
-    <option>Week</option>
+  <select 
+  value={selectedFilters.week || ''}
+  onChange={(e)=> handleChange('week', e.target.value)}
+  className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
+    <option value="">Week </option>
+    <option value="0">Week I</option>
+    <option value="1">Week II</option>
+    <option value="2">Week III</option>
+    <option value="3">Week IV</option>
+    <option value="4">Week V</option>
   </select>
   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
 </div>
@@ -44,9 +71,9 @@ export default function UtilizationDropdown({
   
   >
 
-    <option>College</option>
+    <option value="">College</option>
     {colleges.map((type,i)=>(
-        <option key={i} value={(type.collegename)}>
+        <option key={i} value={(type.collegeid)}>
             {type.collegename || type.name}
         </option>
     ))}
@@ -63,7 +90,7 @@ export default function UtilizationDropdown({
   >
     <option value="">Program Type</option>
     {programTypes.map((type, i) => (
-      <option key={i} value={type.programtypename}>
+      <option key={i} value={type.programtypeid}>
         {type.programtypename }
       </option>
     ))}
@@ -77,9 +104,9 @@ export default function UtilizationDropdown({
   value={selectedFilters.buildingblock || ''}
   onChange={(e)=> handleChange('buildingblock', e.target.value)}
   >
-    <option>Building Blocks</option>
+    <option value="">Building Blocks</option>
     {buildingBlocks.map((type, i) => (
-  <option key={i} value={type.BlockName} >
+  <option key={i} value={type.BlockID} >
     {type.BlockName}
   </option>
 ))}

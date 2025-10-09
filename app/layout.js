@@ -10,8 +10,8 @@ const comicNeue = Comic_Neue({
 });
 
 export const metadata = {
-  title: "Create Next App",
-  description: "Using Comic Neue with Next.js",
+  title: "MIS Dashboard",
+  description: "MIS Dashboard",
 };
 
 export default function RootLayout({ children }) {
