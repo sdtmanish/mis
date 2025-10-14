@@ -1,22 +1,15 @@
 'use client'
-import { useEffect, useState, useRef } from 'react';
+import {useState, useEffect, useRef, createContext} from 'react'
+import Utilization from '../components/Utilization'
 
-export default function TabChangeDetector() {
-  const [count, setCount] = useState(0);
-  const prevCount = useRef(null)
+export const ThemeContext = createContext("dark");
 
-  useEffect(()=>{
-    prevCount.current = count;
-  },[count])
-
+export default function Test(){
 
   return (
-    <div className="flex flex-col justify-center items-center mt-20 text-xl">
-    
-    <p>Current : {count}</p>
-    <p>Prevous: {prevCount.current}</p>
+    <div>
 
-    <button onClick={()=>setCount(count+1)}>Increnment</button>
+       <Utilization/>
     </div>
-  );
+  )
 }

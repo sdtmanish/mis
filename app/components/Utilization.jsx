@@ -16,6 +16,7 @@ export default function Utilization() {
   const [isOpen, setIsOpen] = useState(false)
   const isFirstRender = useRef(true);
   const [loading, setLoading] = useState(false);
+  const [weekNotSelected, setWeekNotSelected] = useState(null);
 
 
   //dropdowns states
@@ -27,7 +28,8 @@ export default function Utilization() {
     college: '',
     buildingblock: '',
     month: '',
-    week: ''
+    week: '',
+    weekNotSelected: ''
   })
 
 
@@ -95,6 +97,9 @@ export default function Utilization() {
     const bothEmpty =
       selectedFilters.month === "" && selectedFilters.week === "";
 
+    const week = selectedFilters.month !== "" && selectedFilters.week === ""
+    setWeekNotSelected(week);
+
     setIsOpen(false);
     setSelectedCell(null);
     setPopupData([]);
@@ -115,6 +120,8 @@ export default function Utilization() {
       setIsOpen(false);
       setSelectedCell(null);
       setPopupData([]);
+
+      if (weekNotSelected) return;
       fetchFilteredUtilization();
     }
   }, [
@@ -284,7 +291,7 @@ export default function Utilization() {
   })
 
   // 🔹 Handle popup fetch
-  const handleClick = async (date, periodcode) => {
+  const handleClick = async (date, periodcode,  BlockId, ProgramTypeid, CollegeId) => {
     try {
       const response = await fetch(
         'http://dolphinapi.myportal.co.in/api/ClassRoomUtilisationstrength',
@@ -294,7 +301,7 @@ export default function Utilization() {
             'Content-Type': 'application/json',
             'APIKey': 'Sdt!@#321',
           },
-          body: JSON.stringify({ date, periodcode }),
+          body: JSON.stringify({ date, periodcode, BlockId, ProgramTypeid, CollegeId }),
         }
       )
 
@@ -334,6 +341,7 @@ export default function Utilization() {
         buildingBlocks={buildingBlocks}
         selectedFilters={selectedFilters}
         onFilterChange={setSelectedFilters}
+        weekNotSelected={weekNotSelected}
 
       />
 
@@ -367,136 +375,139 @@ export default function Utilization() {
               {days.map((day, j) => {
                 const cell = pivot[time][day];
                 return (
-                 <td
-  key={j}
-  className={`
+                  <td
+                    key={j}
+                    className={`
     border border-slate-400 px-2 py-1 text-center cursor-pointer font-normal text-2xl 
     hover:bg-green-200
     ${selectedCell === `${time}-${day}` && "bg-orange-300/50"}
   `}
-  onClick={() => {
-    if (cell) {
-      handleClick(cell.ttdate, cell.periodcode);
-      setSelectedCell(`${time}-${day}`);
-    }
-  }}
->
-  {cell ? (() => {
-  // 🕓 Extract timing and build Date object
-  const timeMatch = cell.Timings.match(/(\d{1,2}:\d{2})/);
-  const startTime = timeMatch ? timeMatch[1] : "00:00";
-  const classDateTime = new Date(`${cell.ttdate.split("T")[0]}T${startTime}:00`);
-  const now = new Date();
+                    onClick={() => {
+                      if (cell) {
+                        handleClick(cell.ttdate, cell.periodcode, cell.BlockId, cell.ProgramTypeId, cell.CollegeId);
+                        setSelectedCell(`${time}-${day}`);
+                      }
+                    }}
+                  >
+                    {cell ? (() => {
+                      // 🕓 Extract timing and build Date object
+                      const timeMatch = cell.Timings.match(/(\d{1,2}:\d{2})/);
+                      const startTime = timeMatch ? timeMatch[1] : "00:00";
+                      const classDateTime = new Date(`${cell.ttdate.split("T")[0]}T${startTime}:00`);
+                      const now = new Date();
 
-  // 🧮 Convert values
-  const totalClassStrength = Number(cell.TotalClassStrength);
-  const totalStudents = Number(cell.TotalStudents);
-  const totalPresent = Number(cell.TotalPresent);
+                      // 🧮 Convert values
+                      const totalClassStrength = Number(cell.TotalClassStrength);
+                      const totalStudents = Number(cell.TotalStudents);
+                      const totalPresent = Number(cell.TotalPresent);
 
-  // 🧭 Determine status
-  let classStatus = "";
-  if (now < classDateTime) {
-    classStatus = "future"; // 🟡 To be held
-  } else if (
-    now >= classDateTime &&
-    totalClassStrength === 0 &&
-    totalStudents === 0 &&
-    totalPresent === 0
-  ) {
-    classStatus = "missed"; // 🔴 Didn’t happen
-  } else if (now >= classDateTime) {
-    classStatus = "completed"; // 🟢 Happened
-  }
+                      // 🧭 Determine status
+                      let classStatus = "";
+                      if (now < classDateTime) {
+                        classStatus = "future"; // 🟡 To be held
+                      } else if (
+                        now >= classDateTime &&
+                        totalClassStrength === 0 &&
+                        totalStudents === 0 &&
+                        totalPresent === 0
+                      ) {
+                        classStatus = "missed"; // 🔴 Didn’t happen
+                      } else if (now >= classDateTime) {
+                        classStatus = "completed"; // 🟢 Happened
+                      }
 
-  // 🧩 Render
-  return (
-    <div className="relative w-full min-h-[80px] flex flex-col items-center justify-center bg-transparent p-1">
-      
-      {/* ALWAYS SHOW class count */}
-      <span className="text-base xl:text-lg font-semibold text-black text-center mb-1">
-        {cell.dis} {Number(cell.dis) === 1 ? "class" : "classes"}
-      </span>
+                      // 🧩 Render
+                      return (
+                        <div className="relative w-full min-h-[80px] flex flex-col items-center justify-center bg-transparent p-1">
 
-      {/* 🟢 Show charts only if completed */}
-      {classStatus === "completed" && (
-        <div className="w-full flex items-center justify-between mb-1">
-          {/* LEFT CHART — Students */}
-          <div className="w-[22%] h-[45px] bg-transparent z-30">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={getStudentAttendanceChartData(cell)}
-                layout="horizontal"
-                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-              >
-                <XAxis type="category" dataKey="name" hide />
-                <Tooltip
-                  content={({ payload }) => {
-                    if (!payload || !payload.length) return null;
-                    const total = payload.find(p => p.dataKey === "total")?.value;
-                    const present = payload.find(p => p.dataKey === "present")?.value;
-                    return (
-                      <div className="bg-white border border-gray-300 rounded-md px-2 py-2 text-sm shadow-md w-[150px]">
-                        <p className="font-semibold text-slate-700 mb-1 text-base">Students</p>
-                        <p className="text-teal-600 ">Total: {total}</p>
-                        <p className="text-emerald-700">Present: {present}</p>
-                      </div>
-                    );
-                  }}
-                />
-                <Bar dataKey="total" fill="#14b8a6" />
-                <Bar dataKey="present" fill="#0f766e" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+                          {/* ALWAYS SHOW class count */}
+                          <span className="text-base xl:text-lg font-semibold text-black text-center mb-1">
+                            
+                            {cell.dis} {Number(cell.dis) === 1 ? "class" : "classes"}
+                          </span>
 
-          {/* RIGHT CHART — Seats */}
-          <div className="w-[22%] h-[45px] bg-transparent z-50">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={getClassStrengthChartData(cell)}
-                layout="horizontal"
-                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-              >
-                <XAxis type="category" dataKey="name" hide />
-                <Tooltip
-                  content={({ payload }) => {
-                    if (!payload || !payload.length) return null;
-                    const totalStrength = payload.find(p => p.dataKey === "totalStrength")?.value;
-                    const present = payload.find(p => p.dataKey === "present")?.value;
-                    return (
-                      <div className="bg-white border border-gray-300 rounded-md px-2 py-2 text-sm shadow-md w-[150px]">
-                        <p className="font-semibold text-slate-700 mb-1 text-base">Seats</p>
-                        <p className="text-gray-500 ">Total: {totalStrength}</p>
-                        <p className="text-slate-700">Occupied: {present}</p>
-                      </div>
-                    );
-                  }}
-                />
-                <Bar dataKey="totalStrength" fill="#94a3b8" />
-                <Bar dataKey="present" fill="#334155" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
+                          {/* 🟢 Show charts only if completed */}
+                          {classStatus === "completed" && (
+                            <div className="w-full flex items-center justify-between mb-1">
+                              {/* LEFT CHART — Students */}
+                              <div className="w-[22%] h-[45px] bg-transparent z-30">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <BarChart
+                                    data={getStudentAttendanceChartData(cell)}
+                                    layout="horizontal"
+                                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+                                  >
+                                    <XAxis type="category" dataKey="name" hide />
+                                    <Tooltip
+                                      content={({ payload }) => {
+                                        if (!payload || !payload.length) return null;
+                                        const total = payload.find(p => p.dataKey === "total")?.value;
+                                        const present = payload.find(p => p.dataKey === "present")?.value;
+                                        return (
+                                          <div className="bg-white border border-gray-300 rounded-md px-2 py-2 text-sm shadow-md w-[150px]">
+                                            <p className="font-semibold text-slate-700 mb-1 text-base">Students</p>
+                                            <p className="text-teal-600 ">Total: {total}</p>
+                                            <p className="text-emerald-700">Present: {present}</p>
+                                          </div>
+                                        );
+                                      }}
+                                    />
+                                    <Bar dataKey="total" fill="#14b8a6" />
+                                    <Bar dataKey="present" fill="#0f766e" />
+                                  </BarChart>
+                                </ResponsiveContainer>
+                                <p className="text-xs">Students</p>
+                              </div>
 
-      {/* 🟡🔴 Status line BELOW classes */}
-      {classStatus === "future" && (
-        <p className="text-gray-500 italic text-sm font-medium mt-1 animate-fadeIn">
-          To be held
-        </p>
-      )}
-      {classStatus === "missed" && (
-        <p className="text-red-600 italic text-sm font-medium mt-1 animate-fadeIn">
-          Class didn’t happen
-        </p>
-      )}
-    </div>
-  );
-})() : null}
+                              {/* RIGHT CHART — Seats */}
+                              <div className="w-[22%] h-[45px] bg-transparent z-50 ">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <BarChart
+                                    data={getClassStrengthChartData(cell)}
+                                    layout="horizontal"
+                                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+                                  >
+                                    <XAxis type="category" dataKey="name" hide />
+                                    <Tooltip
+                                      content={({ payload }) => {
+                                        if (!payload || !payload.length) return null;
+                                        const totalStrength = payload.find(p => p.dataKey === "totalStrength")?.value;
+                                        const present = payload.find(p => p.dataKey === "present")?.value;
+                                        return (
+                                          <div className="bg-white border border-gray-300 rounded-md px-2 py-2 text-sm shadow-md w-[150px]">
+                                            <p className="font-semibold text-slate-700 mb-1 text-base">Seats</p>
+                                            <p className="text-gray-500 ">Total: {totalStrength}</p>
+                                            <p className="text-slate-700">Occupied: {present}</p>
+                                          </div>
+                                        );
+                                      }}
+                                    />
+                                    <Bar dataKey="totalStrength" fill="#94a3b8" />
+                                    <Bar dataKey="present" fill="#334155" />
+                                  </BarChart>
+                                </ResponsiveContainer>
+                                <p className="text-xs">Seats</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 🟡🔴 Status line BELOW classes */}
+                          {classStatus === "future" && (
+                            <p className="text-gray-500 italic text-sm font-medium mt-1 animate-fadeIn">
+                              To be held
+                            </p>
+                          )}
+                          {classStatus === "missed" && (
+                            <p className="text-red-600 italic text-sm font-medium mt-1 animate-fadeIn">
+                              Yet to be updated
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })() : null}
 
 
-</td>
+                  </td>
 
                 );
               })}

@@ -5,7 +5,8 @@ export default function UtilizationDropdown({
     colleges = [],
     buildingBlocks = [],
     selectedFilters,
-    onFilterChange
+    onFilterChange,
+    weekNotSelected
 }) {
 
     //herper for select handling 
@@ -33,6 +34,12 @@ export default function UtilizationDropdown({
    onChange={(e)=> handleChange('month',e.target.value)}
    className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
     <option value="">Month</option>
+    
+    <option value="7">Aug</option>
+    <option value="8">Sep</option>
+    <option value="9">Oct</option>
+    <option value="10">Nov</option>
+    <option value="11">Dec</option>
     <option value="0">Jan</option>
     <option value="1">Feb</option>
     <option value="2">Mar</option>
@@ -40,20 +47,22 @@ export default function UtilizationDropdown({
     <option value="4">May</option>
     <option value="5">June</option>
     <option value="6">July</option>
-    <option value="7">Aug</option>
-    <option value="8">Sep</option>
-    <option value="9">Oct</option>
-    <option value="10">Nov</option>
-    <option value="11">Dec</option>
   </select>
   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">▼</span>
 </div>
 <div className="relative w-[200px]">
-  <select 
+  <select
   value={selectedFilters.week || ''}
-  onChange={(e)=> handleChange('week', e.target.value)}
-  className="w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 appearance-none">
-    <option value="">Week </option>
+  onChange={(e) => handleChange('week', e.target.value)}
+  className={`w-full px-2 py-1 border rounded-md shadow-sm appearance-none 
+    focus:outline-none 
+    ${weekNotSelected 
+      ? 'border-red-500/60 focus:border-red-500/60 bg-red-200 ' 
+      : 'border-gray-300 focus:border-blue-500'}
+  `}
+>
+
+   {weekNotSelected? <option value="select week " className="text-red">select week</option>: <option value="">Week </option>}
     <option value="0">Week I</option>
     <option value="1">Week II</option>
     <option value="2">Week III</option>

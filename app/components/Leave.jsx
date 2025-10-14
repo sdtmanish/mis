@@ -1,7 +1,14 @@
 'use client'
 import { useState, useEffect } from 'react';
+import {useContext} from 'react'
+
+
+
 
 export default function Leave() {
+
+
+
   const [data, setData] = useState([]);
   const [leaveTypes, setLeaveTypes] = useState([]);
       const [isLoading, setIsLoading] = useState(true);
@@ -68,6 +75,7 @@ export default function Leave() {
 
   return (
     <div className="p-4  text-gray-800 mt-8 flex justify-center">
+      
       {/* scroll container */}
       <div className="max-h-[80vh] w-full overflow-y-auto overflow-x-auto">
         <table className="table-auto border-collapse w-full text-sm">

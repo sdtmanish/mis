@@ -37,6 +37,7 @@ export default function Home() {
   }
 
   return (
+    
     <div className="px-4 ">
 <div className="sticky top-0 z-999 bg-white shadow-md">
   {/* Top bar */}
