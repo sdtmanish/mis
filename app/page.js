@@ -6,6 +6,7 @@ import TodayLectures from './components/TodayLectures';
 import Leave from './components/Leave';
 import Utilization from './components/Utilization';
 import EmployeeAttendanceSheet from './components/EmployeeAttendanceSheet';
+import FeedBackNames from './components/Feedback/FeedBackNames';
 
 const tabs = [
   { id: 'registration', name: 'Registration', component: <div className="text-black">Registration</div> },
@@ -17,7 +18,7 @@ const tabs = [
   { id: 'daily-time-table', name: 'Master Time Table', component: <div className="text-black">Daily Time Table</div> },
   { id: 'attendance-sheet', name: 'Attendance Sheet', component: <div className="text-black">Attendance Sheet</div> },
   { id: 'lectures-status-on-leave', name: 'Lectures Status On Leave', component: <div className="text-black">Lectures Status On Leave</div> },
-  { id: 'mis-report', name: 'MIS Report', component: <div className="text-black">MIS Report</div> },
+  { id: 'feedback', name: 'Feedback', component: <div className="text-black">Feedback</div> },
   { id: 'utillization', name: 'Utillization/Occupancy', component: <div className="text-black">Utillization</div> },
 ];
 
@@ -39,7 +40,7 @@ export default function Home() {
   return (
     
     <div className="px-4 ">
-<div className="sticky top-0 z-999 bg-white shadow-md">
+<div className="sticky top-0 z-999 bg-white shadow-md ">
   {/* Top bar */}
   <div className="flex items-center justify-between px-6 py-2 border-b border-gray-200">
     <div className="flex items-center gap-3">
@@ -98,7 +99,7 @@ export default function Home() {
        
        {activeTab === 'lectures-status-on-leave' && <div className="text-black">Lectures Status On Leave</div>}  
        
-       {activeTab === 'mis-report' && <div className="text-black">MIS Report</div>}  
+       {activeTab === 'feedback' && <div className="text-black"><FeedBackNames/></div>}  
        
        {activeTab === 'utillization' && <div> <Utilization/> </div>}  
       

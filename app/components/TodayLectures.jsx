@@ -52,7 +52,7 @@ export default function TodayLectures() {
       <div className="max-h-[80vh] w-full overflow-y-auto overflow-x-auto ">
         <table className="border-collapse border border-gray-300  text-sm text-left ">
           {/* Table Head */}
-          <thead className="bg-slate-600 text-white text-center text-base sticky top-0 z-10">
+          <thead className="bg-slate-600 text-white text-center text-base sticky top-0 z-10 ">
             <tr>
               <th className="w-[13%]  border border-gray-300 px-2 lg:px-4 py-2">Program Semester</th>
               <th className="w-[9%] border border-gray-300 px-2 lg:px-4 py-2">Faculty</th>

@@ -1,15 +1,23 @@
 'use client'
-import {useState, useEffect, useRef, createContext} from 'react'
-import Utilization from '../components/Utilization'
 
-export const ThemeContext = createContext("dark");
+import {useState, useEffect} from 'react'
 
-export default function Test(){
+export function useFetch(url){
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error,  setError] = useState(null);
 
-  return (
-    <div>
+ useEffect(() => {
+    setLoading(true);
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch data");
+        return res.json();
+      })
+      .then((data) => setData(data))
+      .catch((err) => setError(err))
+      .finally(() => setLoading(false));
+  }, [url]);
 
-       <Utilization/>
-    </div>
-  )
+  return {data, loading, error};
 }

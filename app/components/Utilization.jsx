@@ -613,9 +613,15 @@ export default function Utilization() {
                         <td className="border border-gray-300 px-4 py-2 text-left text-gray-700">
                           {i.faculty}
                         </td>
-                        <td className="border border-gray-300 px-4 py-2 text-gray-700 truncate">
-                          {i.program}
-                        </td>
+                      <td className="border border-gray-300 px-4 py-2 text-gray-700 truncate">
+  {i.program
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+  }
+</td>
+
                         <td className="border border-gray-300 px-4 py-2 text-gray-700 text-center">
                           {i.students}
                         </td>
