@@ -1,110 +1,162 @@
-'use client'
-import { useState, useEffect } from 'react'
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import DailyTimeTable from "./components/DailyTimeTable";
-import TodayLectures from './components/TodayLectures';
-import Leave from './components/Leave';
-import Utilization from './components/Utilization';
-import EmployeeAttendanceSheet from './components/EmployeeAttendanceSheet';
-import FeedBackNames from './components/Feedback/FeedBackNames';
 
-const tabs = [
-  { id: 'registration', name: 'Registration', component: <div className="text-black">Registration</div> },
-  { id: 'today-lecture', name: "Today's Lectures", component: <div className="text-black">{"Today's Lectures"}</div> },
-  { id: 'attendance', name: 'Attendance', component: <div className="text-black">Attendance</div> },
-  { id: 'syllabus-coverage', name: 'Syllabus Coverage', component: <div className="text-black">Syllabus Coverage</div> },
-  { id: 'syllabus-coverage-faculty-wise', name: 'Syllabus Coverage(Faculty Wise)', component: <div className="text-black">Syllabus Coverage (Faculty Wise)</div> },
-  { id: 'leave', name: 'Leave', component: <div className="text-black">Leave</div> },
-  { id: 'daily-time-table', name: 'Master Time Table', component: <div className="text-black">Daily Time Table</div> },
-  { id: 'attendance-sheet', name: 'Attendance Sheet', component: <div className="text-black">Attendance Sheet</div> },
-  { id: 'lectures-status-on-leave', name: 'Lectures Status On Leave', component: <div className="text-black">Lectures Status On Leave</div> },
-  { id: 'feedback', name: 'Feedback', component: <div className="text-black">Feedback</div> },
-  { id: 'utillization', name: 'Utillization/Occupancy', component: <div className="text-black">Utillization</div> },
-];
+export default function Login() {
+  const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-export default function Home() {
-  const [activeTab, setActiveTab] = useState('daily-time-table');
 
-  useEffect(()=>{
-    const savedTab = localStorage.getItem('activeTab');
-    if(savedTab){
-      setActiveTab(savedTab);
+  const handleLogin = async () => {
+    setErrorMessage('');
+
+    try {
+      const res = await fetch('http://apidol.myportal.co.in/api/LoginUserWeb', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'APIKey': 'Sdt!@#321',
+        },
+        body: JSON.stringify({
+          LoginName: username,
+          Password: password,
+        }),
+      });
+
+      const data = await res.json();
+      console.log('🔑 Login API Response:', data);
+
+      if (Array.isArray(data) && data.length > 0) {
+        const user = data[0];
+       
+
+        localStorage.setItem('userData', JSON.stringify(user));
+        
+        
+
+        router.push('/mis-dashboard');
+      } else {
+        setErrorMessage('Login failed. Please check your username and password.');
+      }
+    } catch (err) {
+      console.error('Login Failed:', err);
+      setErrorMessage('An unexpected error occurred. Please try again later.');
     }
-  },[]);
-
-  const handleTabClick = (tabId)=>{
-    setActiveTab(tabId);
-    localStorage.setItem('activeTab',tabId)
-  }
+  };
 
   return (
-    
-    <div className="px-4 ">
-<div className="sticky top-0 z-999 bg-white shadow-md ">
-  {/* Top bar */}
-  <div className="flex items-center justify-between px-6 py-2 border-b border-gray-200">
-    <div className="flex items-center gap-3">
-      {/* Logo placeholder */}
-      <div className="w-8 h-8 bg-gradient-to-tr from-blue-200 to-indigo-200 rounded-lg"><Image src="/assets/DolphinLogo.png" width="30" height="30" alt="Logo" /></div>
-      <h1 className="text-lg font-semibold text-gray-700">MIS Dashboard</h1>
-    </div>
-    <div className="text-base font-bold text-gray-800">Welcome, User 👋</div>
-  </div>
+    <div className="min-h-screen  flex items-center justify-center  relative overflow-hidden p-4">
+{/* Top-left blob */}
+<div className="absolute top-0 left-0 w-56 h-56 bg-gradient-to-br from-[#3B82F6] to-[#06B6D4] rounded-br-[70%] opacity-40 z-0"></div>
 
-  {/* Tabs */}
-  <div className="flex flex-wrap justify-center gap-2 px-2 py-2 2xl:gap-4  bg-gray-50">
-    {tabs.map(tab => (
-      <button
-        key={tab.id}
-        className={`
-          relative px-2 py-1 text-sm 2xl:text-base font-bold transition-colors cursor-pointer
-          ${activeTab === tab.id 
-            ? 'text-blue-600' 
-            : 'text-gray-600 hover:text-gray-800'}
-        `}
-        onClick={() => handleTabClick(tab.id)}
-      >
-        {tab.name}
-        {activeTab === tab.id && (
-          <span className="absolute left-0 bottom-0 w-full h-[3px] bg-blue-600 rounded-full transition-all duration-300"></span>
-        )}
-      </button>
-    ))}
-  </div>
-</div>
+{/* Top-right blob */}
+<div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-[#F97316] to-[#FACC15] rounded-bl-[70%] opacity-40 z-0"></div>
+
+{/* Bottom-left blob */}
+<div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-[#10B981] to-[#A7F3D0] rounded-tr-[70%] opacity-40 z-0"></div>
+
+{/* Bottom-right blob */}
+<div className="absolute bottom-0 right-0 w-56 h-56 bg-gradient-to-tl from-[#EC4899] to-[#8B5CF6] rounded-tl-[70%] opacity-40 z-0"></div>
 
 
+      {/* Main Card */}
+      <div className="relative z-10 bg-white rounded-2xl shadow-xl flex w-full max-w-7xl overflow-hidden">
+        {/* Left Illustration */}
+        <div className="hidden md:flex flex-col items-center justify-center bg-white px-8 py-10 w-1/2">
+          <Image
+            src="/assets/DolphinLogo.png"
+            alt="Login Illustration"
+            width={300}
+            height={300}
+            className="object-contain"
+          />
+        </div>
 
-       {activeTab === 'registration' && <div className="text-black">Registration</div>}  
+        {/* Right Login Form */}
+        <div className="w-full md:w-1/2 bg-white px-8 py-10">
+          {/* Logo */}
+          <div className="flex items-center gap-2 mb-6">
+            <Image src="/assets/DolphinLogo.png" alt="Logo" width={24} height={24} />
+            <span className="text-xl font-semibold">Dolphine Institute</span>
+          </div>
 
-              {activeTab === 'today-lecture' && <div>
-                
-                <TodayLectures/>
-                
-                
-                </div>}  
+          {/* Welcome Text */}
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome to MIS Dashboard</h2>
+          <p className="text-sm text-gray-500 mb-6">Your Admin Dashboard</p>
 
-                     {activeTab === 'attendance' && <div > Attendance </div>}  
-       {activeTab === 'syllabus-coverage' && <div className="text-black">Syllabus Coverage</div>}  
-       {activeTab === 'syllabus-coverage-faculty-wise' && <div className="text-black">Syllabus Coverage (Faculty Wise)</div>}  
-       {activeTab === 'leave' && <div className="text-black"><Leave/></div>}  
+          {/* Social Buttons */}
+          <div className="flex gap-4 mb-6">
+            <button className="flex-1 border border-gray-300 text-sm py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-50">
+              <Image src="/assets/google-icon.svg" alt="Google" width={20} height={20} />
+              Sign in with Google
+            </button>
+            <button className="flex-1 border border-gray-300 text-sm py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-50">
+              <Image src="/assets/facebook-icon.svg" alt="Facebook" width={20} height={20} />
+              Sign in with FB
+            </button>
+          </div>
 
+          {/* Divider */}
+          <div className="text-center text-xs text-gray-600 mb-6 border-t pt-4">or sign in with</div>
 
-      {activeTab === 'daily-time-table' && <div>
-        <DailyTimeTable />
+          {/* Username Field */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Password Field */}
+          <div className="mb-4">
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Remember + Forgot */}
+          <div className="flex items-center justify-between mb-4 text-sm">
+            <label className="flex items-center gap-2">
+              <input type="checkbox" className="accent-blue-500" />
+              Remember this Device
+            </label>
+            <a href="/forgot-password" className="text-blue-600 hover:underline">
+              Forgot Password?
+            </a>
+          </div>
+
+          {/* Sign In Button */}
+          <button
+            onClick={handleLogin}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer py-3 rounded-full text-sm font-medium mb-4"
+          >
+            Sign In
+          </button>
+
+          {/* Error Message */}
+          {errorMessage && (
+            <p className="text-red-600 text-sm text-center mb-4">{errorMessage}</p>
+          )}
+
+          {/* Create Account
+          <p className="text-sm text-center text-gray-500">
+            New to Spike?{' '}
+            <a href="#" className="text-blue-600 hover:underline">
+              Create an account
+            </a>
+          </p> */}
+        </div>
       </div>
-      }
-
-       {activeTab === 'attendance-sheet' && <div ><EmployeeAttendanceSheet/></div>}  
-       
-       {activeTab === 'lectures-status-on-leave' && <div className="text-black">Lectures Status On Leave</div>}  
-       
-       {activeTab === 'feedback' && <div className="text-black"><FeedBackNames/></div>}  
-       
-       {activeTab === 'utillization' && <div> <Utilization/> </div>}  
-      
-
-
     </div>
   );
 }

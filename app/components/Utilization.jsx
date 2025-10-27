@@ -491,7 +491,7 @@ export default function Utilization() {
                             </div>
                           )}
 
-                          {/* 🟡🔴 Status line BELOW classes */}
+                          {/* Status line BELOW classes */}
                           {classStatus === "future" && (
                             <p className="text-gray-500 italic text-sm font-medium mt-1 animate-fadeIn">
                               To be held
