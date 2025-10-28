@@ -139,7 +139,7 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
         <tr
           key={idx}
           onClick={() => setSelectedQuestionIndex(idx)} // 👈 click to change chart
-          className={`border-b border-gray-200 transition-colors ${
+          className={`border-b border-gray-200 transition-colors hover:bg-green-200 ${
             idx === selectedQuestionIndex
               ? 'bg-emerald-100'
               : idx % 2 === 0

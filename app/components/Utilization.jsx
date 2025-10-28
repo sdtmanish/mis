@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import UtilizationDropdown from './dropdowns/UtilizationDropdown'
+import { useExportExcelData } from '../Hooks/useExportExcelData'
 
 export default function Utilization() {
   const nodeRef = useRef(null)
@@ -317,19 +318,9 @@ export default function Utilization() {
     }
   }
 
-  //function for exporting in excelsheet
-  const exportToExcel = (data, fileName = "table-data.xlsx") => {
+ 
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, fileName);
-  }
-
+  const { exportToExcel } = useExportExcelData();
 
 
   return (
@@ -348,7 +339,7 @@ export default function Utilization() {
 
       {/* Main Table */}
       <table className="border border-gray-300 w-[98vw] xl:w-[95vw]  h-[80vh] ">
-        <thead className="bg-slate-600 text-white text-lg">
+        <thead className="bg-slate-700 text-white text-lg">
           <tr>
             <th className="border border-slate-400 px-1 py-2 font-bold">S.No</th>
             <th className="border border-gray-300 px-2 py-2 font-bold">Timings</th>
@@ -537,7 +528,7 @@ export default function Utilization() {
 
                 <div className=" flex flex-row justify-center items-center gap-2">
                   <button
-                    onClick={() => exportToExcel(sortedData, 'UtilizationData.xlsx')}
+                    onClick={() => exportToExcel(sortedData, "UtilizationData.xlsx")}
                     className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-1 rounded-sm cursor-pointer"
                   >
                     To Excel
@@ -554,7 +545,7 @@ export default function Utilization() {
               {/* Popup Content */}
               <div className="overflow-y-auto overflow-x-hidden">
                 <table className="w-[80vw] table-fixed border border-gray-300 border-t border-collapse">
-                  <thead className="bg-slate-600 border-t border-slate-600 text-white sticky top-0 z-20">
+                  <thead className="bg-slate-700 border-t border-slate-600 text-white sticky top-0 z-20">
                     <tr>
                       <th className="border border-gray-300 px-4 py-2 text-center font-semibold w-1/4 cursor-pointer"
                         onClick={() => requestSort('faculty')}
@@ -569,7 +560,7 @@ export default function Utilization() {
                       >
                         <div className="flex flex-row justify-center items-center gap-1">
                           Program Semester <HiMiniChevronUpDown size={16} />
-                          {sortConfig?.key == 'program'}
+                          {sortConfig?.key === 'program'}
                         </div>
                       </th>
                       <th

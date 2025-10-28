@@ -18,7 +18,7 @@ export default function FeedBackNames() {
     const [data, setData] = useState([])
     const [courseData, setCourseData] = useState([])
     const [selectedFbId, setSelectedFbId] = useState(null)
-    const [selectedFeedback, setSelectedFeedback] = useState(null) // ✅ New state
+    const [selectedFeedback, setSelectedFeedback] = useState(null) 
     const [photoData, setPhotoData] = useState(null);
     const [loading, setLoading] = useState(false);
 

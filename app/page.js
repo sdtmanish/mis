@@ -14,7 +14,7 @@ export default function Login() {
     setErrorMessage('');
 
     try {
-      const res = await fetch('http://apidol.myportal.co.in/api/LoginUserWeb', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
