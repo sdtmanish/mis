@@ -3,82 +3,49 @@
 import {useState, useEffect} from 'react'
 
 export default function useFetch(){
-
-  //Array.isArray()
-  const a = [1,3,4];
-  const b = "hello"
-  console.log(Array.isArray(a));
-  console.log("b is ",Array.isArray(b));
-
   
+  const numbers = [10,20,30,40,50,60,90,30];
+  const fruits = ["apple","banana","cherry", "apple"];
 
-  //Array.from() -> creates a new arrayy from an iterable like string, set, map, or nodelist
-  console.log(Array.from(b));
+  //includes -> check if an array contains an specific value
 
- const set = new Set([1,2,3]);
-  console.log(set)
-  console.log(Array.from(set))
+  console.log(numbers.includes(15))
+  console.log(fruits.includes('apple'))
 
-  //Array.of() ->
-  console.log(Array.of(1,2,4));
-  console.log(Array.of('a','b'))
+  //indexOf()-> return the first index of value 
+  console.log(numbers.indexOf(30))
+  console.log(fruits.indexOf("banana"))
 
-  console.log(Array.of());
-  console.log(Array(3));
-  console.log(Array.of(3));
+  //lastIndexOf()-> return the last index of value(searches from the end )
+  console.log(numbers.lastIndexOf(30))
+  console.log(fruits.lastIndexOf('apple'))
 
+  //find()-> return the first element that matches the condition 
+  //return the value not index
+  const res = numbers.find(num => num%3)
+  console.log(res)
 
-  //constructor 
-  const arr = [10,20,30];
-  console.log(arr.constructor === Array)
-  console.log(arr.constructor)
-  const newArr = new arr.constructor(5,6,7);
-  console.log(newArr);
-  console.log(arr.length)
-
-  const c = [1,5,6,7,8,0]
-  console.log(c.length)
-
-  c.push(11);
-  console.log(c)
-  c.push(133);
-  console.log(c)
-  c.pop();
-  console.log(c)
-  c.pop();
-  console.log(c)
-  //unshift -> adds one or more elements to the beginning of the array
-
-  c.unshift(55);
-  console.log(c)
-  c.unshift(44,66)
-  console.log(c)
-
-  c.shift()
-  console.log(c)
-
-const d = [9,6,5,4,4]
-
-console.log(c.concat(d))
-
-console.log(d.slice(2,4))
-console.log(d.slice(2))
+  //findIndex() -> 
+  const idx = numbers.findIndex(num => num>25);
+  console.log(idx)
 
 
+  //findLast()-> similar to find ,searches from end to start 
+  const lastBig = numbers.findLast(num => num>25)
+  console.log(lastBig)
 
-//splice -> can add , remove, replace elements at any position
-//mo
+  //findLastIndex()->  similar to findIndex, searches from end to start 
+  const lastBigIndex = numbers.findLastIndex(num => num>25)
+  console.log(lastBigIndex)
 
-const colors = ['red', 'green', 'yellow'];
-const z = colors.splice(0,0,'pink')
-console.log(z)
-console.log(colors)
+  //some()-> checks if any element satisfies a conditon
+  const hasLarge = numbers.some(num => num>40)
+  console.log(hasLarge)
 
-console.log(colors.splice(3,3))
-console.log(colors)
+  const allPositie = numbers.every(num => num>0)
+  console.log(allPositie)
 
-colors.splice(2,1,'black');
-console.log(colors)
+
 
   return (
     <div>test</div>

@@ -59,7 +59,7 @@ export default function EmployeeAttendanceSheet() {
   }
   return (
     <div className="text-gray-800 w-full flex flex-col  justify-center max-h-[80vh] mt-2">
-      <div className="flex flex-row gap-8 justify-center items-center mb-1 bg-white">
+      <div className="flex flex-row gap-8 justify-center items-center mb-1 bg-white ">
         <AttendanceSheetDropdown/>
         <button
         onClick={() => exportToExcel(sortedData, "EmployeeAttendanceData.xlsx")}
@@ -84,7 +84,14 @@ export default function EmployeeAttendanceSheet() {
                   {sortConfig?.key === 'Name'}
                 </div>
               </th>
-              <th className="w-[11%] px-2 lg:px-4 py-2 border border-gray-300 font-semibold">Department</th>
+              <th className="w-[11%] px-2 lg:px-4 py-2 border border-gray-300 font-semibold"
+              onClick={()=> requestSort('Department')}
+              >
+                <div className="flex flex-row justify-center items-center gap-1">
+                  Department <HiMiniChevronUpDown size={16}/>
+                  {sortConfig?.key === 'Department'}
+                </div>
+              </th>
               <th className="w-[13%] px-1 lg:px-2 py-2 border border-gray-300 font-semibold">Designation</th>
              
               <th className="w-[6%] px-1 lg:px-2 py-2 border border-gray-300 font-semibold"
