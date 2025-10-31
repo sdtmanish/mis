@@ -51,19 +51,30 @@ export default function UserManual() {
             {/* 🔹 Header Section */}
             <div className="flex flex-row justify-between border-b border-gray-300 py-3 items-center sm:w-[95vw] lg:w-[80vw] mx-auto ">
                 <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 px-8">
-                    <p className="bg-blue-100 text-blue-700 font-semibold px-3 py-1 rounded-md">
+                    {/* <p className="bg-blue-100 text-blue-700 font-semibold px-3 py-1 rounded-md">
                     Enquiry
-                    </p>
+                    </p> */}
 
-                    <div className="flex items-center gap-2 ">
-                        <FaPhoneVolume size={16} className="text-blue-600" />
-                        <p>+91-7088909192</p>
-                    </div>
+                   <div className="flex items-center gap-2">
+  <FaPhoneVolume size={16} className="text-blue-600" />
+  <a
+    href="tel:+917088909192"
+    className="hover:underline text-blue-700"
+  >
+    +91-7088909192
+  </a>
+</div>
 
-                    <div className="flex items-center gap-2 ">
-                        <AiOutlineMail size={18} className="text-blue-600" />
-                        <p>info@sdt.net.in</p>
-                    </div>
+<div className="flex items-center gap-2">
+  <AiOutlineMail size={18} className="text-blue-600" />
+  <a
+    href="mailto:info@sdt.net.in"
+    className="hover:underline text-blue-700"
+  >
+    info@sdt.net.in
+  </a>
+</div>
+
                 </div>
 
                 <div className="px-8">
