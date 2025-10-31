@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
+import { MdArrowForward } from 'react-icons/md';
 
 export default function Login() {
   const router = useRouter();
@@ -53,7 +55,19 @@ export default function Login() {
 <div className="absolute top-0 left-0 w-56 h-56 bg-gradient-to-br from-[#3B82F6] to-[#06B6D4] rounded-br-[70%] opacity-40 z-0"></div>
 
 {/* Top-right blob */}
-<div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-[#F97316] to-[#FACC15] rounded-bl-[70%] opacity-40 z-0"></div>
+<div className="absolute top-0 right-0 w-56 h-56 bg-blue-800 opacity-40 rounded-bl-[70%] z-0">
+  <div className="">
+  <Link 
+  href="/user-manual" 
+  className="flex justify-center items-center mt-4 text-white font-bold text-lg z-3 hover:underline"
+>
+  User Manual
+  <MdArrowForward/>
+</Link>
+</div>
+
+
+</div>
 
 {/* Bottom-left blob */}
 <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-[#10B981] to-[#A7F3D0] rounded-tr-[70%] opacity-40 z-0"></div>
@@ -93,14 +107,14 @@ export default function Login() {
               <Image src="/assets/google-icon.svg" alt="Google" width={20} height={20} />
               Sign in with Google
             </button>
-            <button className="flex-1 border border-gray-300 text-sm py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-50">
+            {/* <button className="flex-1 border border-gray-300 text-sm py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-50">
               <Image src="/assets/facebook-icon.svg" alt="Facebook" width={20} height={20} />
               Sign in with FB
-            </button>
+            </button> */}
           </div>
 
           {/* Divider */}
-          <div className="text-center text-xs text-gray-600 mb-6 border-t pt-4">or sign in with</div>
+          <div className="text-center text-sm text-gray-600 mb-6 border-t pt-4">or sign in with</div>
 
           {/* Username Field */}
           <div className="mb-4">

@@ -114,7 +114,7 @@ export default function UserManual() {
 
                             <p className="text-gray-600 text-lg font-bold underline">Mobile App</p>
                             <ul className=" pl-5 text-gray-600 space-y-2 ">
-                                <p className="flex flex-row gap-2">1. Go to Google <Image src="/assets/playstoreicon.png" width={20} height={20} alt="playstore"  className="hidden sm:block sm:w-5 h-5  "/>  Play Store/ <Image src="/assets/appleicon.webp" width={24} height={24} alt="playstore"  className=" hidden sm:block sm:w-5 h-5 " />Apple Store and search "intelli skool".</p>
+                                <div className="flex flex-wrap gap-1"><p className="flex flex-row gap-2">1. Go to Google</p> <Image src="/assets/playstoreicon.png" width={20} height={20} alt="playstore"  className="hidden sm:block sm:w-5 h-5  "/> <p>  Play Store/</p> <Image src="/assets/appleicon.webp" width={24} height={24} alt="playstore"  className=" hidden sm:block sm:w-5 h-5 " /><p>Apple Store and search "intelli skool".</p></div>
                                 <p>2. Install and Open the app.</p>
                                 <p>3. Enter Institution/School URL shared by school.</p>
                                 <p>4. Enter the username and password.</p>
@@ -122,7 +122,7 @@ export default function UserManual() {
 
                             <p className="text-gray-600 text-lg font-bold underline mt-4">Web Portal</p>
                             <ul className="list-decimal pl-5 text-gray-600 space-y-2">
-                                <p className="flex flex-row gap-1">1. Use <Image src="/assets/cromeicon.webp" width={22} height={22} alt="playstore"  className="w-5 h-5 " />Google Chrome or <span className="flex flex-row"><Image src="/assets/mozilaicon.webp" width={24} height={24} alt="playstore"  className="w-5 h-5" />Mozilla Firefox.</span></p>
+                                <p>1. Use Google Chrome or <span className="flex flex-row">Mozilla Firefox.</span></p>
                                 <p>2. Visit the school website and click on the ERP Login button.</p>
                                 <p>3. Enter credentials shared by the school.</p>
                                 <p>4. Once logged in, you can explore all features.</p>
@@ -216,9 +216,13 @@ export default function UserManual() {
                         ))}
 
                         {/* App Store Buttons */}
-                        <div className="flex flex-col items-start gap-3">
+                       
+                        <div className="flex flex-col items-start gap-3" 
+                        
+                        >
                             <p>Mobile App Available on</p>
                             <div className="flex flex-row gap-3 justify-center">
+                                 <Link href="https://play.google.com/store/apps/details?id=com.intelli.skool">
                                 <div className="flex items-center bg-gray-900 px-4 py-2 rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300">
                                     <Image src="/assets/playstoreicon.png" width={40} height={40} alt="playstore" />
                                     <div className="text-white ml-2">
@@ -226,6 +230,7 @@ export default function UserManual() {
                                         <p className="font-semibold text-sm">Google Play</p>
                                     </div>
                                 </div>
+                                </Link>
 
                                 <div className="flex items-center bg-gray-900 px-4 py-2 rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300">
                                     <Image src="/assets/appleicon.webp" width={40} height={40} alt="appstore" />
@@ -240,19 +245,7 @@ export default function UserManual() {
                 </div>
             </div>
 
-            <div className="w-full bg-blue-500 h-[150px] mt-8 bg-[url('/assets/qqquad.svg')]">
-                <div className="flex flex-row justify-around lg:justify-between items-center w-[60vw] h-full gap-8 mx-auto px-8">
-                    <div className="flex flex-row gap-2 justify-center items-center">
-                        <FaPhoneVolume size={24} className="text-white" />
-                        <div className="text-white font-bold text-xl flex flex-col items-center">
-                            <p>Sales enquiry</p>
-                            <p> +91-7088909192</p>
-                        </div>
-                    </div>
-
-                    <span className="bg-white text-blue-500 px-6 py-1.5 rounded-4xl text-lg font-bold cursor-pointer">Talk To Us</span>
-                </div>
-            </div>
+            <hr className="mt-8"></hr>
 
             <div className="flex justify-center items-center h-[100px] text-lg font-bold text-gray-500">
                 @{new Date().getFullYear()} SDT Consultants | All Rights Reserved
