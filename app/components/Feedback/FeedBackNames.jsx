@@ -38,8 +38,17 @@ export default function FeedBackNames() {
         body: JSON.stringify({ sessionid: Number(sessionId) }),
       })
 
-      const feedbackNames = await feedbackRes.json()
-      setData(feedbackNames)
+     const feedbackNames = await feedbackRes.json()
+
+// 🩹 Ensure data is always an array
+if (Array.isArray(feedbackNames)) {
+  setData(feedbackNames)
+} else if (Array.isArray(feedbackNames?.data)) {
+  setData(feedbackNames.data)
+} else {
+  console.warn('Unexpected feedbackNames format:', feedbackNames)
+  setData([])
+}
 
       if (feedbackNames?.length > 0) {
         const sorted = [...feedbackNames].sort(
@@ -74,23 +83,50 @@ export default function FeedBackNames() {
             body: JSON.stringify({}),
           }
         )
-        const sessions = await sessionDropdownRes.json()
-        setSessionDropDownData(sessions)
+       const sessions = await sessionDropdownRes.json()
+
+if (Array.isArray(sessions)) {
+  setSessionDropDownData(sessions)
+} else if (Array.isArray(sessions?.data)) {
+  setSessionDropDownData(sessions.data)
+} else {
+  console.warn('Unexpected session response:', sessions)
+  setSessionDropDownData([])
+}
+
       } catch (err) {
         console.error('Error fetching sessions:', err)
       }
     }
 
     fetchSessions()
-    fetchFeedBackNames(selectedSessionId) // ✅ initial fetch
+    // fetchFeedBackNames(selectedSessionId) // ✅ initial fetch
   }, [])
 
-  // ✅ Called when session changes from dropdown
-  const handleSessionChange = async (sessionId) => {
-    console.log('Session selected in parent:', sessionId)
-    setSelectedSessionId(sessionId)
-    await fetchFeedBackNames(sessionId)
+ const [lastFetchedSession, setLastFetchedSession] = useState(null)
+
+const handleSessionChange = async (sessionId) => {
+  if (!sessionId) return
+
+  // 🚫 prevent re-fetching same session
+  if (sessionId === lastFetchedSession) {
+    console.log('Skipping duplicate fetch for session:', sessionId)
+    return
   }
+
+  console.log('Fetching feedback for new session:', sessionId)
+  setLastFetchedSession(sessionId)
+  setSelectedSessionId(sessionId)
+
+  setLoading(true)
+  try {
+    await fetchFeedBackNames(sessionId)
+  } finally {
+    setLoading(false)
+  }
+}
+
+
 
   // ✅ Fetch course details for specific feedback
   const fetchCourseDetails = async (Fb_id) => {
@@ -233,7 +269,13 @@ export default function FeedBackNames() {
                   onClick={() => handleClick(r.Fb_id)}
                 >
                   <td className="text-center border-r border-l border-gray-300 p-1.5">{i + 1}</td>
-                  <td className="text-left border-r border-gray-300 p-1.5">{r.FBName}</td>
+                <td className="text-left border-r border-gray-300 p-1.5">
+  {r.FBName
+    ? r.FBName.split('-').slice(0, 2).join('-').trim()
+    : ''}
+</td>
+
+
                   <td className="text-center border-r border-gray-300 p-1.5">{dateFrom.toLocaleDateString('en-GB')}</td>
                   <td className="text-center border-r border-gray-300 p-1.5">{dateTo.toLocaleDateString('en-GB')}</td>
                   <td className="text-center border-r border-gray-300 p-1.5">{r.TotalStudents}</td>

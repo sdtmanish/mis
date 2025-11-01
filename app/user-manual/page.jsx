@@ -55,25 +55,25 @@ export default function UserManual() {
                     Enquiry
                     </p> */}
 
-                   <div className="flex items-center gap-2">
-  <FaPhoneVolume size={16} className="text-blue-600" />
-  <a
-    href="tel:+917088909192"
-    className="hover:underline text-blue-700"
-  >
-    +91-7088909192
-  </a>
-</div>
+                    <div className="flex items-center gap-2">
+                        <FaPhoneVolume size={16} className="text-blue-600" />
+                        <a
+                            href="tel:+917088909192"
+                            className="hover:underline text-blue-700"
+                        >
+                            +91-7088909192
+                        </a>
+                    </div>
 
-<div className="flex items-center gap-2">
-  <AiOutlineMail size={18} className="text-blue-600" />
-  <a
-    href="mailto:info@sdt.net.in"
-    className="hover:underline text-blue-700"
-  >
-    info@sdt.net.in
-  </a>
-</div>
+                    <div className="flex items-center gap-2">
+                        <AiOutlineMail size={18} className="text-blue-600" />
+                        <a
+                            href="mailto:info@sdt.net.in"
+                            className="hover:underline text-blue-700"
+                        >
+                            info@sdt.net.in
+                        </a>
+                    </div>
 
                 </div>
 
@@ -125,7 +125,7 @@ export default function UserManual() {
 
                             <p className="text-gray-600 text-lg font-bold underline">Mobile App</p>
                             <ul className=" pl-5 text-gray-600 space-y-2 ">
-                                <div className="flex flex-wrap gap-1"><p className="flex flex-row gap-2">1. Go to Google</p> <Image src="/assets/playstoreicon.png" width={20} height={20} alt="playstore"  className="hidden sm:block sm:w-5 h-5  "/> <p>  Play Store/</p> <Image src="/assets/appleicon.webp" width={24} height={24} alt="playstore"  className=" hidden sm:block sm:w-5 h-5 " /><p>Apple Store and search "intelli skool".</p></div>
+                                <div className="flex flex-wrap gap-1"><p className="flex flex-row gap-2">1. Go to Google</p> <Image src="/assets/playstoreicon.png" width={20} height={20} alt="playstore" className="hidden sm:block sm:w-5 h-5  " /> <p>  Play Store/</p> <Image src="/assets/appleicon.webp" width={24} height={24} alt="playstore" className=" hidden sm:block sm:w-5 h-5 " /><p>Apple Store and search "intelli skool".</p></div>
                                 <p>2. Install and Open the app.</p>
                                 <p>3. Enter Institution/School URL shared by school.</p>
                                 <p>4. Enter the username and password.</p>
@@ -227,20 +227,20 @@ export default function UserManual() {
                         ))}
 
                         {/* App Store Buttons */}
-                       
-                        <div className="flex flex-col items-start gap-3" 
-                        
+
+                        <div className="flex flex-col items-start gap-3"
+
                         >
                             <p>Mobile App Available on</p>
                             <div className="flex flex-row gap-3 justify-center">
-                                 <Link href="https://play.google.com/store/apps/details?id=com.intelli.skool">
-                                <div className="flex items-center bg-gray-900 px-4 py-2 rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300">
-                                    <Image src="/assets/playstoreicon.png" width={40} height={40} alt="playstore" />
-                                    <div className="text-white ml-2">
-                                        <p className="text-[10px] leading-tight">GET IT ON</p>
-                                        <p className="font-semibold text-sm">Google Play</p>
+                                <Link href="https://play.google.com/store/apps/details?id=com.intelli.skool">
+                                    <div className="flex items-center bg-gray-900 px-4 py-2 rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300">
+                                        <Image src="/assets/playstoreicon.png" width={40} height={40} alt="playstore" />
+                                        <div className="text-white ml-2">
+                                            <p className="text-[10px] leading-tight">GET IT ON</p>
+                                            <p className="font-semibold text-sm">Google Play</p>
+                                        </div>
                                     </div>
-                                </div>
                                 </Link>
 
                                 <div className="flex items-center bg-gray-900 px-4 py-2 rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300">
