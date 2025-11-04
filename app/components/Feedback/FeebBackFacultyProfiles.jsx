@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react';
-import { Bar } from "react-chartjs-2";
-import { Pie } from 'react-chartjs-2';
+import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   BarElement,
@@ -19,13 +18,21 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
   const [employeeName, setEmployeeName] = useState("");
   const [pieData, setPieData] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // ✅ new state for search
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedEmpCode, setSelectedEmpCode] = useState(null);
+  const [selectedFbId, setSelectedFbId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [remainingStudents, setRemainingStudents] = useState(null); // ✅ new state for popup data
 
   if (!data) return null;
 
   // ======== Fetch & Pivot Analysis Data ========
   const handlePhotoClick = async (e_Code, fb_id) => {
     try {
+      setSelectedEmpCode(e_Code);
+      setSelectedFbId(fb_id);
+      setLoading(true);
+
       const res = await fetch('http://dolphinapi.myportal.co.in/api/FeedBackByFac', {
         method: 'POST',
         headers: {
@@ -57,7 +64,7 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
 
       const pivotData = Object.values(pivotMap);
       setAnalysisData(pivotData);
-      setSelectedQuestionIndex(0); // default question
+      setSelectedQuestionIndex(0);
 
       // ✅ Get totalstudents & attempted from localStorage
       const storedSummary = localStorage.getItem(`feedback_summary_${fb_id}`);
@@ -77,7 +84,9 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
         setPieData(null);
       }
     } catch (err) {
-      console.log(err);
+      console.error('Error fetching faculty analysis:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,6 +94,102 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
     setAnalysisData(null);
     setPieData(null);
     setEmployeeName("");
+  };
+
+  // ======== ✅ NEW: Handle Pie Chart Click ========
+  const handlePieClick = async () => {
+    if (!selectedEmpCode || !selectedFbId) {
+      alert("Faculty or Feedback ID missing!");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch('http://dolphinapi.myportal.co.in/api/FeebBackRemaingStudent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'APIKey': 'Sdt!@#321',
+        },
+        body: JSON.stringify({
+          fb_id: selectedFbId,
+          empcode: selectedEmpCode
+        })
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const result = await res.json();
+      console.log('📊 Remaining Student Data:', result);
+      setRemainingStudents(result); // ✅ open popup with data
+    } catch (err) {
+      console.error('Error calling FeebBackRemaingStudent API:', err);
+      alert('❌ Error fetching remaining student data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ======== ✅ Popup Close ========
+  const closePopup = () => {
+    setRemainingStudents(null);
+  };
+
+  // ======== Render Popup Modal ========
+  const RemainingStudentsPopup = () => {
+    if (!remainingStudents) return null;
+
+   return (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 mt-4">
+    <div className="bg-white w-[90vw] md:w-[60vw] max-h-[80vh] rounded-2xl shadow-2xl p-6 relative flex flex-col">
+      <button
+        onClick={closePopup}
+        className="absolute top-4 right-4 text-red-500 text-xl font-bold cursor-pointer hover:bg-gray-100 px-3 py-1 rounded-full transition"
+      >
+        ✕
+      </button>
+
+      {/* ✅ Header stays fixed */}
+      <div className="flex-shrink-0">
+        <h3 className="text-2xl font-bold text-emerald-700 mb-4">
+          Remaining Students ({remainingStudents.length})
+        </h3>
+      </div>
+
+      {/* ✅ Scroll only inside this container */}
+      <div className="flex-1 overflow-y-auto  rounded-lg">
+        <table className="min-w-full border-collapse text-sm">
+          <thead className="bg-emerald-400 text-white sticky top-0 z-10">
+            <tr>
+              <th className="p-3 border border-gray-300 text-left">S.No</th>
+              <th className="p-3 border border-gray-300 text-left">Student Name</th>
+              <th className="p-3 border border-gray-300 text-left">Course</th>
+            </tr>
+          </thead>
+          <tbody>
+            {remainingStudents.map((student, idx) => (
+              <tr
+                key={idx}
+                className={`${
+                  idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                } hover:bg-emerald-300 cursor-pointer transition`}
+              >
+                <td className="p-3 border border-gray-200">{idx + 1}</td>
+                <td className="p-3 border border-gray-200 font-medium">
+                  {student.studentname}
+                </td>
+                <td className="p-3 border border-gray-200">
+                  {student.studentcourse}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
   };
 
   // ======== Render Analysis Table ========
@@ -102,133 +207,121 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
     const values = labels.map(label => selectedItem[label] || 0);
 
     return (
-      <div className="max-w-[95vw] mx-auto mt-2 p-4 bg-white rounded-2xl shadow-2xl border border-gray-200 relative">
-        <button 
-          onClick={handleCloseAnalysis}
-          className="cursor-pointer absolute top-4 right-4 text-red-500 text-xl font-bold hover:bg-gray-100 px-3 py-1 rounded-full transition"
-        >
-          ✕
-        </button>
-
-        <h2 className="text-2xl font-bold text-emerald-700 mb-4 text-left">
-          Feedback Analysis for <span className="text-emerald-900">{employeeName}</span>
-        </h2>
-
-        {/* TABLE */}
-       <div className="overflow-x-auto overflow-y-auto max-h-[40vh] mb-6 ">
-  <table className="min-w-full border-collapse text-sm">
-    <thead className="bg-emerald-400 sticky top-0 z-10">
-      <tr className="border border-gray-300 border-b ">
-        <th className="text-left p-3 font-semibold border-r border-gray-300 ">
-          Question
-        </th>
-        {answerColumns.map((col, idx) => (
-          <th
-            key={idx}
-            className={`p-3 font-semibold border-r border-gray-300 
-            }`}
+      <>
+        <RemainingStudentsPopup /> {/* ✅ include modal here */}
+        <div className="max-w-[95vw] mx-auto mt-2 p-4 bg-white rounded-2xl shadow-2xl border border-gray-200 relative">
+          <button 
+            onClick={handleCloseAnalysis}
+            className="cursor-pointer absolute top-4 right-4 text-red-500 text-xl font-bold hover:bg-gray-100 px-3 py-1 rounded-full transition"
           >
-            {col}
-          </th>
-        ))}
-      </tr>
-    </thead>
+            ✕
+          </button>
 
-    <tbody>
-      {analysisData.map((item, idx) => (
-        <tr
-          key={idx}
-          onClick={() => setSelectedQuestionIndex(idx)} // 👈 click to change chart
-          className={`border-b border-gray-200 transition-colors ${
-            idx === selectedQuestionIndex
-              ? 'bg-emerald-100'
-              : idx % 2 === 0
-              ? 'bg-white'
-              : 'bg-gray-50'
-          } hover:bg-emerald-50 cursor-pointer`}
-        >
-          <td className="text-left p-3 font-medium max-w-xs border-r border-l border-gray-200">
-            {item.Question}
-          </td>
-          {answerColumns.map((col, i) => (
-            <td key={i} className="text-center p-3 border-r border-gray-200">
-              {item[col] || 0}
-            </td>
-          ))}
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
+          <h2 className="text-2xl font-bold text-emerald-700 mb-4 text-left">
+            Feedback Analysis for <span className="text-emerald-900">{employeeName}</span>
+          </h2>
 
-
-        {/* ✅ SINGLE HORIZONTAL BAR CHART + PIE CHART SIDE BY SIDE */}
-        <div className="flex flex-col md:flex-row justify-center items-center gap-8 mt-6">
-          <div className="bg-gray-50 p-6 rounded-xl shadow-lg w-[600px]">
-            <h3 className="font-semibold mb-3 text-gray-700 text-center">
-              {selectedItem.Question}
-            </h3>
-            <Bar
-              data={{
-                labels,
-                datasets: [
-                  {
-                    data: values,
-                     backgroundColor: [
-          '#10B981', // emerald
-          '#3B82F6', // blue
-          '#F59E0B', // amber
-          '#EF4444', // red
-          '#8B5CF6', // violet
-          '#14B8A6', // teal
-          '#F43F5E', // rose
-        ],
-                  },
-                ],
-              }}
-              options={{
-                indexAxis: "x",
-                plugins: { legend: { display: false } },
-                scales: { x: { beginAtZero: true } },
-              }}
-            />
+          {/* TABLE */}
+          <div className="overflow-x-auto overflow-y-auto max-h-[40vh] mb-6">
+            <table className="min-w-full border-collapse text-sm">
+              <thead className="bg-emerald-400 sticky top-0 z-10">
+                <tr className="border border-gray-300 border-b ">
+                  <th className="text-left p-3 font-semibold border-r border-gray-300 ">Question</th>
+                  {answerColumns.map((col, idx) => (
+                    <th key={idx} className="p-3 font-semibold border-r border-gray-300">{col}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {analysisData.map((item, idx) => (
+                  <tr
+                    key={idx}
+                    onClick={() => setSelectedQuestionIndex(idx)}
+                    className={`border-b border-gray-200 transition-colors ${
+                      idx === selectedQuestionIndex
+                        ? 'bg-emerald-100'
+                        : idx % 2 === 0
+                        ? 'bg-white'
+                        : 'bg-gray-50'
+                    } hover:bg-emerald-50 cursor-pointer`}
+                  >
+                    <td className="text-left p-3 font-medium border-r border-l border-gray-200">
+                      {item.Question}
+                    </td>
+                    {answerColumns.map((col, i) => (
+                      <td key={i} className="text-center p-3 border-r border-gray-200">
+                        {item[col] || 0}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
-          {/* ✅ PIE CHART */}
-          {pieData && (
-            <div className="bg-white border border-gray-200 rounded-xl shadow-md p-6 w-[300px] h-[300px] flex flex-col justify-center items-center">
-              <h4 className="font-semibold mb-3 text-emerald-700 text-center">Feedback Summary</h4>
-              <Pie
+          {/* ✅ Bar + Pie Chart */}
+          <div className="flex flex-col md:flex-row justify-center items-center gap-8 mt-6">
+            <div className="bg-gray-50 p-6 rounded-xl shadow-lg w-[600px]">
+              <h3 className="font-semibold mb-3 text-gray-700 text-center">
+                {selectedItem.Question}
+              </h3>
+              <Bar
                 data={{
-                  labels: ['Attempted', 'Remaining'],
+                  labels,
                   datasets: [
                     {
-                      label: 'Students',
-                      data: [
-                        pieData.attempted,
-                        pieData.totalstudents - pieData.attempted,
-                      ],
-                      backgroundColor: ['#22d3ee', '#d946ef'],
-                      borderColor: ['#059669', '#B91C1C'],
-                      borderWidth: 1,
+                      data: values,
+                      backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#14B8A6', '#F43F5E'],
                     },
                   ],
                 }}
                 options={{
-                  responsive: true,
-                  plugins: { legend: { position: 'bottom' } },
+                  indexAxis: "x",
+                  plugins: { legend: { display: false } },
+                  scales: { x: { beginAtZero: true } },
                 }}
               />
             </div>
-          )}
+
+            {/* ✅ Clickable Pie Chart */}
+            {pieData && (
+              <div
+                onClick={handlePieClick}
+                className={`bg-white border border-gray-200 rounded-xl shadow-md p-6 w-[300px] h-[300px] flex flex-col justify-center items-center cursor-pointer hover:scale-105 transition-transform ${loading ? 'opacity-50' : ''}`}
+              >
+                <h4 className="font-semibold mb-3 text-emerald-700 text-center">
+                  Feedback Summary (Click for Remaining Students)
+                </h4>
+                <Pie
+                  data={{
+                    labels: ['Attempted', 'Remaining'],
+                    datasets: [
+                      {
+                        label: 'Students',
+                        data: [
+                          pieData.attempted,
+                          pieData.totalstudents - pieData.attempted,
+                        ],
+                        backgroundColor: ['#22d3ee', '#d946ef'],
+                        borderColor: ['#059669', '#B91C1C'],
+                        borderWidth: 1,
+                      },
+                    ],
+                  }}
+                  options={{
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom' } },
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   // ======== Render Employee Photos Grid ========
-
-  // ✅ Apply search filter (by name or department)
   const filteredData = data.filter(item => {
     const nameMatch = item.EmpName?.toLowerCase().includes(searchTerm.toLowerCase());
     const deptMatch = item.department?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -244,7 +337,7 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
           placeholder="🔍 Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border border-gray-400 rounded-lg px-3 py-1.5 w-full sm:w-64 outline-none  focus:border-blue-500"
+          className="border border-gray-400 rounded-lg px-3 py-1.5 w-full sm:w-64 outline-none focus:border-blue-500"
         />
         <button
           onClick={onClose}

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Login() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function Login() {
     setErrorMessage('');
 
     try {
-      const res = await fetch('http://apidol.myportal.co.in/api/LoginUserWeb', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,7 +28,7 @@ export default function Login() {
       });
 
       const data = await res.json();
-      console.log('🔑 Login API Response:', data);
+      console.log('ðŸ”‘ Login API Response:', data);
 
       if (Array.isArray(data) && data.length > 0) {
         const user = data[0];
@@ -53,7 +54,14 @@ export default function Login() {
 <div className="absolute top-0 left-0 w-56 h-56 bg-gradient-to-br from-[#3B82F6] to-[#06B6D4] rounded-br-[70%] opacity-40 z-0"></div>
 
 {/* Top-right blob */}
-<div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-[#F97316] to-[#FACC15] rounded-bl-[70%] opacity-40 z-0"></div>
+<div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-[#F97316] to-[#FACC15] rounded-bl-[70%] opacity-40 z-0 flex justify-center items-center">
+  <Link 
+    href="/user-manual" 
+    className="z-10 text-white font-bold text-lg drop-shadow-lg hover:text-yellow-100 transition-colors duration-200"
+  >
+    User Manual
+  </Link>
+</div>
 
 {/* Bottom-left blob */}
 <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-[#10B981] to-[#A7F3D0] rounded-tr-[70%] opacity-40 z-0"></div>
@@ -93,10 +101,7 @@ export default function Login() {
               <Image src="/assets/google-icon.svg" alt="Google" width={20} height={20} />
               Sign in with Google
             </button>
-            <button className="flex-1 border border-gray-300 text-sm py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-50">
-              <Image src="/assets/facebook-icon.svg" alt="Facebook" width={20} height={20} />
-              Sign in with FB
-            </button>
+           
           </div>
 
           {/* Divider */}
