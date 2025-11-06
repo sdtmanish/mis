@@ -22,7 +22,85 @@ export default function FeedBackNames() {
   const [photoData, setPhotoData] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  // ✅ Fetch course details for specific feedback
+  // ✅ new: sessions dropdown
+  const [sessions, setSessions] = useState([])
+  const [selectedSessionId, setSelectedSessionId] = useState(null)
+
+  // ✅ Fetch feedback sessions on mount
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const res = await fetch('http://dolphinapi.myportal.co.in/api/FeedBackSession', {
+          method: 'POST',
+          headers: {
+            'APIKey': 'Sdt!@#321',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        })
+
+        if (!res.ok) throw new Error(`HTTP error! ${res.status}`)
+
+        const sessionList = await res.json()
+        const validSessions = Array.isArray(sessionList)
+          ? sessionList
+          : sessionList?.data || []
+
+        setSessions(validSessions)
+
+        // ✅ Default to first session
+        if (validSessions.length > 0) {
+          const firstSession = validSessions[0]
+          setSelectedSessionId(firstSession.sessionid)
+          fetchFeedBackNames(firstSession.sessionid)
+        }
+      } catch (err) {
+        console.error('Error fetching sessions:', err)
+      }
+    }
+
+    fetchSessions()
+  }, [])
+
+  // ✅ Fetch feedback names dynamically (now depends on session)
+  const fetchFeedBackNames = async (sessionId) => {
+    setLoading(true)
+    try {
+      const res = await fetch('http://dolphinapi.myportal.co.in/api/ShowFeedbacks', {
+        method: 'POST',
+        headers: {
+          'APIKey': 'Sdt!@#321',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionid: Number(sessionId) }),
+      })
+
+      if (!res.ok) throw new Error(`HTTP error! ${res.status}`)
+
+      const feedbackList = await res.json()
+      const validList = Array.isArray(feedbackList)
+        ? feedbackList
+        : feedbackList?.data || []
+
+      setData(validList)
+
+      if (validList.length > 0) {
+        const sorted = [...validList].sort(
+          (a, b) => new Date(b.datefrom) - new Date(a.datefrom)
+        )
+        const firstFeedback = sorted[0]
+        setSelectedFeedback(firstFeedback)
+        await fetchCourseDetails(firstFeedback.Fb_id)
+      }
+    } catch (err) {
+      console.error('Error fetching feedback names:', err)
+      setData([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // ✅ Fetch course details for a specific feedback
   const fetchCourseDetails = async (Fb_id) => {
     try {
       const res = await fetch('http://dolphinapi.myportal.co.in/api/FeedBackClasses', {
@@ -41,51 +119,9 @@ export default function FeedBackNames() {
       setSelectedFbId(Fb_id)
     } catch (err) {
       console.error('Error fetching course details:', err)
-      setCourseData([]) // prevent null crashes
+      setCourseData([])
     }
   }
-
-  // ✅ Fetch feedback list on mount
-  useEffect(() => {
-    const fetchFeedBackNames = async () => {
-      setLoading(true)
-      try {
-        const res = await fetch('http://dolphinapi.myportal.co.in/api/ShowFeedbacks', {
-          method: 'POST',
-          headers: {
-            'APIKey': 'Sdt!@#321',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ sessionid: 25 }), // ✅ Default session
-        })
-
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`)
-
-        const feedbackList = await res.json()
-        const validList = Array.isArray(feedbackList)
-          ? feedbackList
-          : feedbackList?.data || []
-
-        setData(validList)
-
-        if (validList.length > 0) {
-          const sorted = [...validList].sort(
-            (a, b) => new Date(b.datefrom) - new Date(a.datefrom)
-          )
-          const firstFeedback = sorted[0]
-          setSelectedFeedback(firstFeedback)
-          await fetchCourseDetails(firstFeedback.Fb_id)
-        }
-      } catch (err) {
-        console.error('Error fetching feedback names:', err)
-        setData([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchFeedBackNames()
-  }, [])
 
   // ✅ Row click handler
   const handleClick = async (Fb_id) => {
@@ -130,11 +166,10 @@ export default function FeedBackNames() {
     }
   }
 
-  // ✅ Safe summary calculator
+  // ✅ Summary calculator
   const getSummary = (dataArr) => {
-    if (!Array.isArray(dataArr) || dataArr.length === 0) {
+    if (!Array.isArray(dataArr) || dataArr.length === 0)
       return { totalStudents: 0, totalAttempted: 0 }
-    }
 
     const totalStudents = dataArr.reduce(
       (sum, c) => sum + (c.TotalStudents || 0),
@@ -150,7 +185,7 @@ export default function FeedBackNames() {
 
   const summary = getSummary(courseData)
 
-  // ✅ If faculty photos are fetched
+  // ✅ If faculty photos fetched
   if (photoData) {
     return (
       <FeedBackFacultyProfiles
@@ -160,7 +195,7 @@ export default function FeedBackNames() {
     )
   }
 
-  // ✅ Loading UI
+  // ✅ Loading
   if (loading) {
     return (
       <p className="text-black flex justify-center items-center mt-12">
@@ -171,7 +206,28 @@ export default function FeedBackNames() {
 
   // ✅ Main Render
   return (
-    <div className="relative flex flex-col gap-[0.2] min-h-[80vh] justify-start items-center mt-8 w-[90vw] mx-auto">
+    <div className="relative flex flex-col gap-2 min-h-[80vh] justify-start items-center mt-2 w-[90vw] mx-auto">
+      {/* ✅ Session Dropdown */}
+      <div className="w-full flex justify-end ">
+        <select
+          className="border border-gray-400 rounded-lg px-3 py-1.5 bg-white text-gray-800 cursor-pointer"
+          value={selectedSessionId || ''}
+          onChange={(e) => {
+            const newSessionId = e.target.value
+            setSelectedSessionId(newSessionId)
+            fetchFeedBackNames(newSessionId)
+          }}
+        >
+          <option value="">Select Session</option>
+          {sessions.map((s) => (
+            <option key={s.sessionid} value={s.sessionid}>
+              {s.sessionname}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* ✅ Feedbacks Table */}
       <table className="min-w-full border-collapse text-sm">
         <thead>
           <tr className="bg-green-500/60 border border-green-400 font-semibold rounded-t-md">
@@ -186,11 +242,9 @@ export default function FeedBackNames() {
             <th className="w-[10%] text-center p-1.5 border-r border-gray-300">Action</th>
           </tr>
         </thead>
-
         <tbody>
           {[...data]
             .sort((a, b) => new Date(b.datefrom) - new Date(a.datefrom))
-            .slice(0, 6)
             .map((r, i) => {
               const today = new Date()
               const dateFrom = new Date(r.datefrom)
@@ -212,32 +266,21 @@ export default function FeedBackNames() {
                   onClick={() => handleClick(r.Fb_id)}
                 >
                   <td className="text-center border-r border-l border-gray-300 p-1.5">{i + 1}</td>
-                  <td className="text-left border-r border-gray-300 p-1.5">
-                    {r.FBName || '-'}
-                  </td>
-                  <td className="text-center border-r border-gray-300 p-1.5">
-                    {dateFrom.toLocaleDateString('en-GB')}
-                  </td>
-                  <td className="text-center border-r border-gray-300 p-1.5">
-                    {dateTo.toLocaleDateString('en-GB')}
-                  </td>
+                  <td className="text-left border-r border-gray-300 p-1.5">{r.FBName || '-'}</td>
+                  <td className="text-center border-r border-gray-300 p-1.5">{dateFrom.toLocaleDateString('en-GB')}</td>
+                  <td className="text-center border-r border-gray-300 p-1.5">{dateTo.toLocaleDateString('en-GB')}</td>
                   <td className="text-center border-r border-gray-300 p-1.5">{r.TotalStudents}</td>
                   <td className="text-center border-r border-gray-300 p-1.5">{r.Attempted}</td>
                   <td className="text-center border-r border-gray-300 p-1.5">
-                    {r.TotalStudents
-                      ? ((r.Attempted / r.TotalStudents) * 100).toFixed(2)
-                      : 0}
-                    %
+                    {r.TotalStudents ? ((r.Attempted / r.TotalStudents) * 100).toFixed(2) : 0}%
                   </td>
-                  <td
-                    className={`text-center border-r border-gray-300 p-1.5 font-semibold ${
-                      status === 'Closed'
-                        ? 'text-red-600'
-                        : status === 'Scheduled'
-                        ? 'text-yellow-600'
-                        : 'text-green-600'
-                    }`}
-                  >
+                  <td className={`text-center border-r border-gray-300 p-1.5 font-semibold ${
+                    status === 'Closed'
+                      ? 'text-red-600'
+                      : status === 'Scheduled'
+                      ? 'text-yellow-600'
+                      : 'text-green-600'
+                  }`}>
                     <div className="flex flex-row justify-center items-center">
                       {status === 'Closed' && <HiOutlineLockClosed size={18} />}
                       {status === 'Scheduled' && <Clock size={18} />}
@@ -247,8 +290,7 @@ export default function FeedBackNames() {
                   </td>
                   <td className="text-center p-1.5 border-r border-gray-300">
                     <button
-                      className="bg-emerald-500 text-white font-semibold py-1 px-2 rounded-md shadow-md cursor-pointer
-                        hover:bg-emerald-600 hover:scale-105 flex items-center justify-center gap-2 transition-all duration-200 active:bg-emerald-400"
+                      className="bg-emerald-500 text-white font-semibold py-1 px-2 rounded-md shadow-md cursor-pointer hover:bg-emerald-600 hover:scale-105 flex items-center justify-center gap-2 transition-all duration-200 active:bg-emerald-400"
                       onClick={(e) => {
                         e.stopPropagation()
                         handleAnalyze(r.Fb_id)
@@ -263,7 +305,7 @@ export default function FeedBackNames() {
         </tbody>
       </table>
 
-      {/* ✅ Feedback Details and Summary */}
+      {/* ✅ Feedback Summary */}
       {courseData.length > 0 && (
         <div className="mt-6 w-[90vw] h-[400px] bg-green-50 rounded-lg shadow-md flex flex-col md:flex-row p-4 gap-6">
           <div className="flex-1 flex flex-col">
@@ -295,10 +337,7 @@ export default function FeedBackNames() {
                       <td className="border-r border-gray-300 p-2">{c.TotalStudents}</td>
                       <td className="border-r border-gray-300 p-2">{c.Attempted}</td>
                       <td className="border-r border-gray-300 p-2">
-                        {c.TotalStudents
-                          ? ((c.Attempted / c.TotalStudents) * 100).toFixed(2)
-                          : 0}
-                        %
+                        {c.TotalStudents ? ((c.Attempted / c.TotalStudents) * 100).toFixed(2) : 0}%
                       </td>
                     </tr>
                   ))}
@@ -308,9 +347,7 @@ export default function FeedBackNames() {
           </div>
 
           <div className="w-1/3 h-[300px] mt-7 flex flex-col justify-center items-center border border-gray-300 p-4 rounded-md">
-            <p className="font-semibold mb-2 text-emerald-700 text-center">
-              Feedback Summary
-            </p>
+            <p className="font-semibold mb-2 text-emerald-700 text-center">Feedback Summary</p>
             <Pie
               data={{
                 labels: ['Attempted', 'Remaining'],

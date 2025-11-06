@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import UtilizationDropdown from './dropdowns/UtilizationDropdown'
+import { useExportToExcel } from '../Hooks/useExportToExcel'
 
 export default function Utilization() {
   const nodeRef = useRef(null)
@@ -17,6 +18,8 @@ export default function Utilization() {
   const isFirstRender = useRef(true);
   const [loading, setLoading] = useState(false);
   const [weekNotSelected, setWeekNotSelected] = useState(null);
+
+  const { exportToExcel } = useExportToExcel()
 
 
   //dropdowns states
@@ -291,7 +294,7 @@ export default function Utilization() {
   })
 
   // 🔹 Handle popup fetch
-  const handleClick = async (date, periodcode,  BlockId, ProgramTypeid, CollegeId) => {
+  const handleClick = async (date, periodcode, BlockId, ProgramTypeid, CollegeId) => {
     try {
       const response = await fetch(
         'http://dolphinapi.myportal.co.in/api/ClassRoomUtilisationstrength',
@@ -315,19 +318,6 @@ export default function Utilization() {
     } catch (err) {
       console.log(err)
     }
-  }
-
-  //function for exporting in excelsheet
-  const exportToExcel = (data, fileName = "table-data.xlsx") => {
-
-    const worksheet = XLSX.utils.json_to_sheet(data);
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, fileName);
   }
 
 
@@ -422,7 +412,7 @@ export default function Utilization() {
 
                           {/* ALWAYS SHOW class count */}
                           <span className="text-base xl:text-lg font-semibold text-black text-center mb-1">
-                            
+
                             {cell.dis} {Number(cell.dis) === 1 ? "class" : "classes"}
                           </span>
 
@@ -613,14 +603,14 @@ export default function Utilization() {
                         <td className="border border-gray-300 px-4 py-2 text-left text-gray-700">
                           {i.faculty}
                         </td>
-                      <td className="border border-gray-300 px-4 py-2 text-gray-700 truncate">
-  {i.program
-    .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-  }
-</td>
+                        <td className="border border-gray-300 px-4 py-2 text-gray-700 truncate">
+                          {i.program
+                            .toLowerCase()
+                            .split(' ')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ')
+                          }
+                        </td>
 
                         <td className="border border-gray-300 px-4 py-2 text-gray-700 text-center">
                           {i.students}

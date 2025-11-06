@@ -1,9 +1,16 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useSortData } from '../Hooks/useSortData';
+import { HiMiniChevronUpDown } from 'react-icons/hi2'
 
 export default function EmployeeAttendanceSheet() {
   const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    const {items:sortedData, requestSort, sortConfig} = useSortData(data  || [], {
+      key:'faculty',
+      direction:'asc'
+    })
 
 
 
@@ -54,8 +61,23 @@ export default function EmployeeAttendanceSheet() {
       <thead className="bg-slate-600  sticky top-0 z-10 text-base text-white">
         <tr>
           <th className="w-[11%] px-1 lg:px-2 py-2 border border-gray-300 font-semibold ">Code</th>
-          <th className="w-[10%] px-2 lg:px-4 py-2 border border-gray-300 font-semibold">Name</th>
-          <th className="w-[11%] px-2 lg:px-4 py-2 border border-gray-300 font-semibold">Department</th>
+          <th className="w-[10%] px-2 lg:px-4 py-2 border border-gray-300 font-semibold"
+           
+          >
+             <div className="flex flex-row justify-center items-center gap-1 cursor-pointer"
+             onClick={() => requestSort('Name')}>
+                                     Name <HiMiniChevronUpDown size={16} />
+                                      {sortConfig?.key === 'Name'}
+                                    </div>
+          
+          </th>
+          <th className="w-[11%] px-2 lg:px-4 py-2 border border-gray-300 font-semibold">
+            <div className="flex flex-row justify-center items-center gap-1 cursor-pointer"
+             onClick={() => requestSort('Department')}>
+                                      Department <HiMiniChevronUpDown size={16} />
+                                      {sortConfig?.key === 'Department'}
+                                    </div>
+          </th>
           <th className="w-[13%] px-1 lg:px-2 py-2 border border-gray-300 font-semibold">Designation</th>
           <th className="w-[11%] px-1 lg:px-2 py-2 border border-gray-300 font-semibold">Date</th>
           <th className="w-[6%] px-1 lg:px-2 py-2 border border-gray-300 font-semibold">In Time</th>
@@ -67,7 +89,7 @@ export default function EmployeeAttendanceSheet() {
         </tr>
       </thead>
       <tbody>
-        {data.map((i, index) => (
+        {sortedData.map((i, index) => (
           <tr key={index} className="border-t hover:bg-green-200 cursor-pointer">
             <td className="px-1 lg:px-2 py-2 text-center border border-gray-300 text-sm">{i.code}</td>
             <td className="px-2 lg:px-4 py-2 text-center border border-gray-300 text-sm">{i.Name}</td>

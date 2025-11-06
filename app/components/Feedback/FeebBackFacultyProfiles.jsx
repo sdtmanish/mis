@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react';
 import { Bar, Pie } from "react-chartjs-2";
+import { TbHandFingerRight } from 'react-icons/tb';
+import { useExportToExcel } from '../../Hooks/useExportToExcel'
 import {
   Chart as ChartJS,
   BarElement,
@@ -23,6 +25,8 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
   const [selectedFbId, setSelectedFbId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [remainingStudents, setRemainingStudents] = useState(null); // ✅ new state for popup data
+
+  const { exportToExcel } = useExportToExcel()
 
   if (!data) return null;
 
@@ -139,56 +143,78 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
   const RemainingStudentsPopup = () => {
     if (!remainingStudents) return null;
 
-   return (
-  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 mt-4">
-    <div className="bg-white w-[90vw] md:w-[60vw] max-h-[80vh] rounded-2xl shadow-2xl p-6 relative flex flex-col">
-      <button
-        onClick={closePopup}
-        className="absolute top-4 right-4 text-red-500 text-xl font-bold cursor-pointer hover:bg-gray-100 px-3 py-1 rounded-full transition"
-      >
-        ✕
-      </button>
+    return (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 mt-4">
+        <div className="bg-white w-[90vw] md:w-[60vw] max-h-[80vh] rounded-2xl shadow-2xl px-6 py-4 relative flex flex-col">
 
-      {/* ✅ Header stays fixed */}
-      <div className="flex-shrink-0">
-        <h3 className="text-2xl font-bold text-emerald-700 mb-4">
-          Remaining Students ({remainingStudents.length})
-        </h3>
-      </div>
+          <div className="flex flex-row  gap-2 justify-end">
 
-      {/* ✅ Scroll only inside this container */}
-      <div className="flex-1 overflow-y-auto  rounded-lg">
-        <table className="min-w-full border-collapse text-sm">
-          <thead className="bg-emerald-400 text-white sticky top-0 z-10">
-            <tr>
-              <th className="p-3 border border-gray-300 text-left">S.No</th>
-              <th className="p-3 border border-gray-300 text-left">Student Name</th>
-              <th className="p-3 border border-gray-300 text-left">Course</th>
-            </tr>
-          </thead>
-          <tbody>
-            {remainingStudents.map((student, idx) => (
-              <tr
-                key={idx}
-                className={`${
-                  idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                } hover:bg-emerald-300 cursor-pointer transition`}
-              >
-                <td className="p-3 border border-gray-200">{idx + 1}</td>
-                <td className="p-3 border border-gray-200 font-medium">
-                  {student.studentname}
-                </td>
-                <td className="p-3 border border-gray-200">
-                  {student.studentcourse}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            <button
+              onClick={closePopup}
+              className="text-right text-red-500 text-xl font-bold cursor-pointer hover:bg-gray-200 px-3 py-1 rounded-full transition"
+            >
+              ✕
+            </button>
+          </div>
+          {/* ✅ Header stays fixed */}
+          <div className="flex flex-row justify-between items-center">
+            <h3 className="text-2xl font-bold text-emerald-700 mb-4">
+              Students with Pending Feedback ({remainingStudents.length})
+            </h3>
+            <button
+              onClick={() => exportToExcel(remainingStudents, 'feedbackRemainingStudents.xlsx')}
+              className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-1 rounded-sm cursor-pointer"
+            >
+              To Excel
+            </button>
+          </div>
+
+          {/* ✅ Scroll only inside this container */}
+          <div className="flex-1 overflow-y-auto  rounded-lg">
+            <table className="min-w-full border-collapse text-sm">
+              <thead className="bg-emerald-400  sticky top-0 z-10 text-black">
+                <tr className="text-center">
+                  <th className="p-3 border border-gray-300 ">S.No</th>
+                  <th className="p-3 border border-gray-300 ">Student Name</th>
+                  <th className="p-3 border border-gray-300 ">Registration Number</th>
+
+
+                  <th className="p-3 border border-gray-300 ">Program Semester</th>
+                  <th className="p-3 border border-gray-300 ">Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                {remainingStudents
+                  ?.slice() // make a copy
+                  .sort((a, b) => a.studentname.localeCompare(b.studentname)) // sort alphabetically A→Z
+                  .map((student, idx) => (
+                    <tr
+                      key={idx}
+                      className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                        } hover:bg-emerald-300 cursor-pointer transition`}
+                    >
+                      <td className="p-3 border border-gray-200">{idx + 1}</td>
+                      <td className="p-3 border border-gray-200 font-medium">
+                        {student.studentname}
+                      </td>
+                      <td className="p-3 border border-gray-200 font-medium">
+                        {student.registrationnumber}
+                      </td>
+                      <td className="p-3 border border-gray-200">
+                        {student.studentcourse}
+                      </td>
+                      <td className="p-3 border border-gray-200 font-medium">
+                        {student.phone}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-);
+    );
 
   };
 
@@ -210,9 +236,9 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
       <>
         <RemainingStudentsPopup /> {/* ✅ include modal here */}
         <div className="max-w-[95vw] mx-auto mt-2 p-4 bg-white rounded-2xl shadow-2xl border border-gray-200 relative">
-          <button 
+          <button
             onClick={handleCloseAnalysis}
-            className="cursor-pointer absolute top-4 right-4 text-red-500 text-xl font-bold hover:bg-gray-100 px-3 py-1 rounded-full transition"
+            className="cursor-pointer absolute top-4 right-4 text-red-500 text-xl font-bold hover:bg-gray-200 px-3 py-1 rounded-full transition"
           >
             ✕
           </button>
@@ -237,13 +263,12 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
                   <tr
                     key={idx}
                     onClick={() => setSelectedQuestionIndex(idx)}
-                    className={`border-b border-gray-200 transition-colors ${
-                      idx === selectedQuestionIndex
-                        ? 'bg-emerald-100'
-                        : idx % 2 === 0
+                    className={`border-b border-gray-200 transition-colors ${idx === selectedQuestionIndex
+                      ? 'bg-emerald-100'
+                      : idx % 2 === 0
                         ? 'bg-white'
                         : 'bg-gray-50'
-                    } hover:bg-emerald-50 cursor-pointer`}
+                      } hover:bg-emerald-50 cursor-pointer`}
                   >
                     <td className="text-left p-3 font-medium border-r border-l border-gray-200">
                       {item.Question}
@@ -262,8 +287,8 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
           {/* ✅ Bar + Pie Chart */}
           <div className="flex flex-col md:flex-row justify-center items-center gap-8 mt-6">
             <div className="bg-gray-50 p-6 rounded-xl shadow-lg w-[600px]">
-              <h3 className="font-semibold mb-3 text-gray-700 text-center">
-                {selectedItem.Question}
+              <h3 className="font-semibold mb-3 text-gray-700 text-center flex flex-row items-center gap-2">
+                <TbHandFingerRight size={24} /> {selectedItem.Question}
               </h3>
               <Bar
                 data={{
@@ -286,11 +311,11 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
             {/* ✅ Clickable Pie Chart */}
             {pieData && (
               <div
-                onClick={handlePieClick}
+
                 className={`bg-white border border-gray-200 rounded-xl shadow-md p-6 w-[300px] h-[300px] flex flex-col justify-center items-center cursor-pointer hover:scale-105 transition-transform ${loading ? 'opacity-50' : ''}`}
               >
                 <h4 className="font-semibold mb-3 text-emerald-700 text-center">
-                  Feedback Summary (Click for Remaining Students)
+                  Feedback Summary
                 </h4>
                 <Pie
                   data={{
@@ -305,14 +330,39 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
                         backgroundColor: ['#22d3ee', '#d946ef'],
                         borderColor: ['#059669', '#B91C1C'],
                         borderWidth: 1,
+                        hoverOffset: 12, // ✅ adds “pop out” hover effect
                       },
                     ],
                   }}
                   options={{
                     responsive: true,
-                    plugins: { legend: { position: 'bottom' } },
+                    plugins: {
+                      legend: { position: 'bottom' },
+                    },
+                    onHover: (event, elements, chart) => {
+                      const target = event.native?.target; // the canvas element
+                      if (elements.length > 0) {
+                        const chartElement = elements[0];
+                        const label = chart.data.labels[chartElement.index];
+                        // ✅ Show pointer only for "Remaining"
+                        target.style.cursor = label === 'Remaining' ? 'pointer' : 'default';
+                      } else {
+                        target.style.cursor = 'default';
+                      }
+                    },
+                    onClick: (evt, elements, chart) => {
+                      if (elements.length > 0) {
+                        const chartElement = elements[0];
+                        const label = chart.data.labels[chartElement.index];
+                        if (label === 'Remaining') {
+                          handlePieClick(); // ✅ only trigger for “Remaining”
+                        }
+                      }
+                    },
                   }}
                 />
+
+
               </div>
             )}
           </div>

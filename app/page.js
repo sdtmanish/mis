@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { FaArrowRight } from 'react-icons/fa';
 
 export default function Login() {
   const router = useRouter();
@@ -53,15 +54,19 @@ export default function Login() {
 {/* Top-left blob */}
 <div className="absolute top-0 left-0 w-56 h-56 bg-gradient-to-br from-[#3B82F6] to-[#06B6D4] rounded-br-[70%] opacity-40 z-0"></div>
 
-{/* Top-right blob */}
-<div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-[#F97316] to-[#FACC15] rounded-bl-[70%] opacity-40 z-0 flex justify-center items-center">
-  <Link 
-    href="/user-manual" 
-    className="z-10 text-white font-bold text-lg drop-shadow-lg hover:text-yellow-100 transition-colors duration-200"
-  >
-    User Manual
-  </Link>
-</div>
+{/* Top-Right Blob Background */}
+<div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-[#F97316] to-[#FACC15] rounded-bl-[70%] opacity-40 z-0" />
+
+{/* Text + Icon (Placed above blob) */}
+<Link 
+  href="/user-manual" 
+  className="absolute top-3 right-3 z-10 text-white font-bold text-lg drop-shadow-lg hover:text-yellow-100 
+             transition-colors duration-200 flex flex-row items-center gap-2"
+>
+  <span>User Manual</span>
+  <FaArrowRight className="text-white" />
+</Link>
+
 
 {/* Bottom-left blob */}
 <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-[#10B981] to-[#A7F3D0] rounded-tr-[70%] opacity-40 z-0"></div>
@@ -84,11 +89,11 @@ export default function Login() {
         </div>
 
         {/* Right Login Form */}
-        <div className="w-full md:w-1/2 bg-white px-8 py-10">
+        <div className="w-full md:w-1/2 bg-white px-8 py-10 text-black">
           {/* Logo */}
           <div className="flex items-center gap-2 mb-6">
             <Image src="/assets/DolphinLogo.png" alt="Logo" width={24} height={24} />
-            <span className="text-xl font-semibold">Dolphine Institute</span>
+            <span className="text-xl font-semibold ">Dolphine Institute</span>
           </div>
 
           {/* Welcome Text */}
