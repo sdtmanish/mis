@@ -407,10 +407,12 @@ export default function FeedBackFacultyProfiles({ data, onClose }) {
             >
               <div className="w-28 h-28 mb-3">
                 <img
-                  src={item.PhotoUrl || '/assets/DolphinLogo.png'}
+                  src={`https://erpportal.dolphininstitute.in/employeePhotos/${item.e_Code}.jpg`}
                   alt={item.EmpName}
                   className="w-full h-full object-cover rounded-full"
+                  onError={(e) => { e.currentTarget.src = '/assets/DolphinLogo.png'; }}
                 />
+
               </div>
               <p className="font-semibold text-center text-gray-800 text-sm mb-1">{item.EmpName}</p>
               <span className="text-xs text-white bg-emerald-500 px-2 py-1 rounded-full">{item.department}</span>

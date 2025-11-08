@@ -95,7 +95,7 @@ export default function EmployeeAttendanceSheet() {
             <td className="px-2 lg:px-4 py-2 text-center border border-gray-300 text-sm">{i.Name}</td>
             <td className="px-2 lg:px-4 py-2 text-center border border-gray-300 text-sm">{i.Department}</td>
             <td className="px-1 lg:px-2 py-2 text-center border border-gray-300 text-sm">{i.Designation}</td>
-            <td className="px-2 lg:px-4 py-2 text-center border border-gray-300 text-sm">{i.date}</td>
+            <td className="px-2 lg:px-4 py-2 text-center border border-gray-300 text-sm">{i.Attdate}</td>
             <td className="px-1 lg:px-2 py-2 text-center border border-gray-300">{i.inTime}</td>
             <td className="px-1 lg:px-2 py-2 text-center border border-gray-300">{i.OutTime}</td>
             <td className="px-1 lg:px-2 py-2 text-center border border-gray-300 text-sm">{i.Schedule}</td>
